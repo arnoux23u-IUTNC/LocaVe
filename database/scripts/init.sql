@@ -1,6 +1,5 @@
 --SCRIPT DES TABLES
-COMMIT;
-ROLLBACK;
+--ROLLBACK;
 --DROPS
 DROP TABLE DOSSIER;
 DROP TABLE CALENDRIER;
@@ -395,3 +394,6 @@ INSERT INTO DOSSIER VALUES(7,TO_DATE('10-Octobre-2015','DD-MON-YYYY'),TO_DATE('2
 INSERT INTO DOSSIER VALUES(8,TO_DATE('13-Octobre-2015','DD-MON-YYYY'),TO_DATE('14-Octobre-2015','DD-MON-YYYY'),null,null,null,'t3',null,null,null,null,'delar001','7418yc54','Nancy','Nancy','Nancy');
 INSERT INTO DOSSIER VALUES(9,TO_DATE('13-Octobre-2015','DD-MON-YYYY'),TO_DATE('14-Octobre-2015','DD-MON-YYYY'),null,null,null,'t2',null,null,null,null,'delar001','6213yd54','Nancy','Nancy','Nancy');
 INSERT INTO DOSSIER VALUES(10,TO_DATE('21-Octobre-2015','DD-MON-YYYY'),TO_DATE('25-Octobre-2015','DD-MON-YYYY'),null,null,null,'t1','x',null,null,null,'roule001','1234ya54','Nancy','Nancy','Nancy');
+
+--COMMIT
+COMMIT;
