@@ -1,6 +1,7 @@
 --SCRIPT DES TABLES
 --ROLLBACK;
 --DROPS
+DROP TABLE "AUDIT";
 DROP TABLE DOSSIER;
 DROP TABLE CALENDRIER;
 DROP TABLE CLIENT;
@@ -89,6 +90,16 @@ CREATE TABlE VEHICULE
     code_ag    VARCHAR2(10),
     PRIMARY KEY (no_imm)
 );
+CREATE TABLE "AUDIT"
+(
+    no_dossier NUMBER(6),
+    dateSys    DATE,
+    code_cli   VARCHAR2(8),
+    nom        VARCHAR2(40),
+    marque     VARCHAR2(20),
+    modele     VARCHAR2(20),
+    PRIMARY KEY (no_dossier)
+);
 
 --FK
 ALTER TABLE DOSSIER
@@ -109,6 +120,8 @@ ALTER TABLE CATEGORIE
     ADD (CONSTRAINT fk_codetarif FOREIGN KEY (code_tarif) REFERENCES tarif (code_tarif));
 ALTER TABLE CALENDRIER
     ADD(CONSTRAINT fk_noimm1 FOREIGN KEY (no_imm) REFERENCES VEHICULE (no_imm));
+ALTER TABLE "AUDIT"
+    ADD(CONSTRAINT fk_nodossier FOREIGN KEY (no_dossier) REFERENCES DOSSIER (no_dossier), CONSTRAINT fk_codecli1 FOREIGN KEY (code_cli) REFERENCES CLIENT (code_cli));
 
 --INSERT
 INSERT INTO TARIF VALUES('t1',120.00,600.00,1.50,650.00,850.00,25.00);
