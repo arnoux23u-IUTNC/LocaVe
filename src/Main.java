@@ -1,3 +1,5 @@
+import mvc.model.Locave;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
@@ -34,7 +36,7 @@ public class Main {
                     addActionListener(e -> {
                         if (loginField.getText().equals("admin") && Arrays.equals(passwordField.getPassword(), new char[]{'a', 'd', 'm', 'i', 'n'})) {
                             dispose();
-                            //TODO new Locave
+                            new Locave();
                         }
                     });
                 }});
