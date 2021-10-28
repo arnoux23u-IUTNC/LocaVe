@@ -9,48 +9,31 @@ import javax.swing.border.*;
  *
  * @author arnoux23u
  */
-public class MenuPanel extends JPanel {
-
-    /**
-     * Classe interne pour l'ajout de boutons repetitifs
-     */
-    private static class StyledButton extends JButton {
-        /**
-         * Constructeur public a un parametre
-         *
-         * @param st texte
-         */
-        public StyledButton(String st) {
-            setText(st);
-            setContentAreaFilled(false);
-            setFocusPainted(false);
-        }
-    }
+public class MenuGUI extends JPanel {
 
     /**
      * Objet representant l'ancien JPanel affiche
      */
-    private JPanel oldJ = null;
+    private JPanel oldPane = null;
 
     /**
      * Constructeur public par defaut
      */
-    public MenuPanel() {
+    public MenuGUI() {
         setLayout(new BorderLayout());
 
         //Panels
         JPanel panel1 = new JPanel() {{
-            setLayout(new GridLayout());
+            setLayout(new BorderLayout());
             setBorder(new LineBorder(Color.black, 3));
         }};
         JPanel panel2 = new JPanel() {{
-            setLayout(new GridLayout());
+            setLayout(new BorderLayout());
         }};
         JPanel panel3 = new JPanel() {{
-            setLayout(new GridLayout());
-            //setPreferredSize(new Dimension(350, 210));
+            setLayout(new BorderLayout());
+            setPreferredSize(new Dimension(350, 210));
             setBorder(new EmptyBorder(50, 5, 10, 5));
-
         }};
         JPanel panel4 = new JPanel() {{
             setLayout(new GridBagLayout());
@@ -64,9 +47,7 @@ public class MenuPanel extends JPanel {
         //Labels
         JLabel label1 = new JLabel() {{
             setIcon(new ImageIcon("assets/locave.png"));
-            //setPreferredSize(new Dimension(200, 200));
-            //setHorizontalAlignment(SwingConstants.CENTER);
-            //setAlignmentX(0.5F);
+            setHorizontalAlignment(SwingConstants.CENTER);
         }};
         JLabel label2 = new JLabel() {{
             setIcon(new ImageIcon("assets/calendar.png"));
@@ -99,15 +80,6 @@ public class MenuPanel extends JPanel {
         JButton button6 = new StyledButton("Clore r\u00e9servation");
         JButton button7 = new StyledButton("Affichage r\u00e9servations");
 
-        //TODO DECLARER PANELS
-        /*SwitchPanel p1 = new SwitchPanel(1);
-        SwitchPanel p2 = new SwitchPanel(2);
-        SwitchPanel p3 = new SwitchPanel(3);
-        SwitchPanel p4 = new SwitchPanel(4);
-        SwitchPanel p5 = new SwitchPanel(5);
-        SwitchPanel p6 = new SwitchPanel(6);
-        SwitchPanel p7 = new SwitchPanel(7);*/
-
         //TODO LISTENERS PANELS
         /*
         button1.addActionListener(e -> changer(panel2, p1));
@@ -137,7 +109,9 @@ public class MenuPanel extends JPanel {
         panel3.add(panel4, BorderLayout.CENTER);
         panel1.add(panel3, BorderLayout.WEST);
         panel2.add(panel1, BorderLayout.WEST);
-        panel2.add(panel1, BorderLayout.WEST);
+        panel2.add(new JPanel() {{
+            add(new JLabel("COucou"));
+        }}, BorderLayout.CENTER);
         add(panel2, BorderLayout.CENTER);
     }
 
@@ -146,10 +120,10 @@ public class MenuPanel extends JPanel {
     }
 
     public void changer(JPanel k, JPanel p) {
-        if (oldJ != null) {
-            k.remove(oldJ);
+        if (oldPane != null) {
+            k.remove(oldPane);
         }
-        oldJ = p;
+        oldPane = p;
         k.add(p, BorderLayout.CENTER);
         k.repaint();
         k.revalidate();

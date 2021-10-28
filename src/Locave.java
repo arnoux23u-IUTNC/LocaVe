@@ -1,8 +1,6 @@
-import gui.MenuPanel;
+import gui.MenuGUI;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
 
@@ -28,7 +26,7 @@ public class Locave extends JPanel {
                     setIconImage(new ImageIcon("assets/locave.png").getImage());
                     setResizable(false);
                     setLocationRelativeTo(null);
-                    setContentPane(new MenuPanel());
+                    setContentPane(new MenuGUI());
                     setVisible(true);
                     new Locave();
                 }
