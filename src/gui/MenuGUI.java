@@ -1,5 +1,7 @@
 package gui;
 
+import gui.panels.*;
+
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.*;
@@ -25,7 +27,7 @@ public class MenuGUI extends JPanel {
         //Panels
         JPanel panel1 = new JPanel() {{
             setLayout(new BorderLayout());
-            setBorder(new LineBorder(Color.black, 3));
+            setBorder(new LineBorder(new Color(0,0,200), 2));
         }};
         JPanel panel2 = new JPanel() {{
             setLayout(new BorderLayout());
@@ -46,29 +48,29 @@ public class MenuGUI extends JPanel {
 
         //Labels
         JLabel label1 = new JLabel() {{
-            setIcon(new ImageIcon("assets/locave.png"));
+            setIcon(new ImageIcon("ressources/locave.png"));
             setHorizontalAlignment(SwingConstants.CENTER);
         }};
         JLabel label2 = new JLabel() {{
-            setIcon(new ImageIcon("assets/calendar.png"));
+            setIcon(new ImageIcon("ressources/calendar.png"));
         }};
         JLabel label3 = new JLabel() {{
-            setIcon(new ImageIcon("assets/cash.png"));
+            setIcon(new ImageIcon("ressources/cash.png"));
         }};
         JLabel label4 = new JLabel() {{
-            setIcon(new ImageIcon("assets/car.png"));
+            setIcon(new ImageIcon("ressources/car.png"));
         }};
         JLabel label5 = new JLabel() {{
-            setIcon(new ImageIcon("assets/client.png"));
+            setIcon(new ImageIcon("ressources/client.png"));
         }};
         JLabel label6 = new JLabel() {{
-            setIcon(new ImageIcon("assets/agence.png"));
+            setIcon(new ImageIcon("ressources/agence.png"));
         }};
         JLabel label7 = new JLabel() {{
-            setIcon(new ImageIcon("assets/check.png"));
+            setIcon(new ImageIcon("ressources/check.png"));
         }};
         JLabel label8 = new JLabel() {{
-            setIcon(new ImageIcon("assets/list.png"));
+            setIcon(new ImageIcon("ressources/list.png"));
         }};
 
         //Boutons
@@ -80,17 +82,19 @@ public class MenuGUI extends JPanel {
         JButton button6 = new StyledButton("Clore r\u00e9servation");
         JButton button7 = new StyledButton("Affichage r\u00e9servations");
 
-        //TODO LISTENERS PANELS
-        /*
-        button1.addActionListener(e -> changer(panel2, p1));
-        button2.addActionListener(e -> changer(panel2, p2));
-        button3.addActionListener(e -> changer(panel2, p3));
-        button4.addActionListener(e -> changer(panel2, p4));
-        button5.addActionListener(e -> changer(panel2, p5));
-        button6.addActionListener(e -> changer(panel2, p6));
-        button7.addActionListener(e -> changer(panel2, p7));
-         */
+        //Panels internes
+        JPanel p1 = AvailablesCarsPanel.getInstance();
 
+        //Listeners
+        button1.addActionListener(e -> changer(panel2, p1));
+        //button2.addActionListener(e -> changer(panel2, p2));
+        //button3.addActionListener(e -> changer(panel2, p3));
+        //button4.addActionListener(e -> changer(panel2, p4));
+        //button5.addActionListener(e -> changer(panel2, p5));
+        //button6.addActionListener(e -> changer(panel2, p6));
+        //button7.addActionListener(e -> changer(panel2, p7));
+
+        //Frame
         panel3.add(label1, BorderLayout.NORTH);
         panel4.add(label2, createConstraint(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, 5, 5, 27, 5, 0, 0));
         panel4.add(button1, createConstraint(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 0, 0, 22, 0, 0, 0));
@@ -109,16 +113,38 @@ public class MenuGUI extends JPanel {
         panel3.add(panel4, BorderLayout.CENTER);
         panel1.add(panel3, BorderLayout.WEST);
         panel2.add(panel1, BorderLayout.WEST);
-        panel2.add(new JPanel() {{
-            add(new JLabel("COucou"));
-        }}, BorderLayout.CENTER);
         add(panel2, BorderLayout.CENTER);
     }
 
-    public GridBagConstraints createConstraint(int gridx, int gridy, int gw, int gh, double wx, double wy, int anchor, int fill, int top, int left, int bottom, int right, int ipdax, int ipday) {
+    /**
+     * Createur de gridbagconstraints
+     *
+     * @param gridx  gridx
+     * @param gridy  gridy
+     * @param gw     gw
+     * @param gh     gh
+     * @param wx     wx
+     * @param wy     wy
+     * @param anchor anchor
+     * @param fill   fill
+     * @param top    top
+     * @param left   left
+     * @param bottom bottom
+     * @param right  right
+     * @param ipdax  ipdax
+     * @param ipday  ipday
+     * @return gridbagconstraints with all these parameters
+     */
+    public static GridBagConstraints createConstraint(int gridx, int gridy, int gw, int gh, double wx, double wy, int anchor, int fill, int top, int left, int bottom, int right, int ipdax, int ipday) {
         return new GridBagConstraints(gridx, gridy, gw, gh, wx, wy, anchor, fill, new Insets(top, left, bottom, right), ipdax, ipday);
     }
 
+    /**
+     * Methode de remplacement de l'ancien panel
+     *
+     * @param k panel parent
+     * @param p panel enfant
+     */
     public void changer(JPanel k, JPanel p) {
         if (oldPane != null) {
             k.remove(oldPane);
