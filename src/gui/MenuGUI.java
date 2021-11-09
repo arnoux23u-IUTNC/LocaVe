@@ -16,7 +16,17 @@ public class MenuGUI extends JPanel {
     /**
      * Objet representant l'ancien JPanel affiche
      */
-    private JPanel oldPane = null;
+    private JPanel oldPane = new JPanel() {{
+        setLayout(new BorderLayout());
+        add(new JLabel("Bienvenue sur Locave") {{
+            setHorizontalAlignment(CENTER);
+            setFont(new Font("Arial", Font.BOLD, 40));
+        }}, BorderLayout.CENTER);
+        add(new JLabel("<html>ARNOUX Guillaume - STEINER Noe<br/><br/></html>") {{
+            setHorizontalAlignment(CENTER);
+            setFont(new Font("Arial", Font.BOLD, 15));
+        }}, BorderLayout.SOUTH);
+    }};
 
     /**
      * Constructeur public par defaut
@@ -27,7 +37,7 @@ public class MenuGUI extends JPanel {
         //Panels
         JPanel panel1 = new JPanel() {{
             setLayout(new BorderLayout());
-            setBorder(new LineBorder(new Color(0,0,200), 2));
+            setBorder(new LineBorder(new Color(0, 0, 200), 2));
         }};
         JPanel panel2 = new JPanel() {{
             setLayout(new BorderLayout());
@@ -84,11 +94,13 @@ public class MenuGUI extends JPanel {
 
         //Panels internes
         JPanel p1 = AvailablesCarsPanel.getInstance();
+        JPanel p2 = ModifyResPanel.getInstance();
+        JPanel p3 = CalculateCostPanel.getInstance();
 
         //Listeners
         button1.addActionListener(e -> changer(panel2, p1));
-        //button2.addActionListener(e -> changer(panel2, p2));
-        //button3.addActionListener(e -> changer(panel2, p3));
+        button2.addActionListener(e -> changer(panel2, p2));
+        button3.addActionListener(e -> changer(panel2, p3));
         //button4.addActionListener(e -> changer(panel2, p4));
         //button5.addActionListener(e -> changer(panel2, p5));
         //button6.addActionListener(e -> changer(panel2, p6));
@@ -113,6 +125,7 @@ public class MenuGUI extends JPanel {
         panel3.add(panel4, BorderLayout.CENTER);
         panel1.add(panel3, BorderLayout.WEST);
         panel2.add(panel1, BorderLayout.WEST);
+        panel2.add(oldPane, BorderLayout.CENTER);
         add(panel2, BorderLayout.CENTER);
     }
 
@@ -146,9 +159,7 @@ public class MenuGUI extends JPanel {
      * @param p panel enfant
      */
     public void changer(JPanel k, JPanel p) {
-        if (oldPane != null) {
-            k.remove(oldPane);
-        }
+        k.remove(oldPane);
         oldPane = p;
         k.add(p, BorderLayout.CENTER);
         k.repaint();

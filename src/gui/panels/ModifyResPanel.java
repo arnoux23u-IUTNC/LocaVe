@@ -5,39 +5,40 @@ import gui.*;
 
 import java.awt.*;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.*;
 
 /**
- * Panel permettant de voir les vehicules disponibles
+ * Panel permettant de modifier le calendrier des reservations
  * Utilisation du patron singleton
  *
  * @author arnoux23u
  */
-public class AvailablesCarsPanel extends JPanel {
+public class ModifyResPanel extends JPanel {
 
     /**
      * Instance singleton
      */
-    private static AvailablesCarsPanel instance;
+    private static ModifyResPanel instance;
 
     /**
      * Constructeur prive
      */
-    private AvailablesCarsPanel() {
+    private ModifyResPanel() {
         setPreferredSize(new Dimension(889, 730));
         setLayout(new BorderLayout());
 
         //Labels
-        JLabel label1 = new JLabel("Demande de disponibilit\u00e9s v\u00e9hicule") {{
+        JLabel label1 = new JLabel("Modification r\u00e9servations v\u00e9hicule") {{
             setHorizontalAlignment(SwingConstants.CENTER);
             setFont(getFont().deriveFont(getFont().getStyle() & ~Font.BOLD, getFont().getSize() + 10f));
 
         }};
-        JLabel label3 = new JLabel("Cat\u00e9gorie");
+        JLabel label3 = new JLabel("Immatriculation");
         JLabel label4 = new JLabel("Date d\u00e9part");
         JLabel label5 = new JLabel("Date retour");
-        JLabel label6 = new JLabel("Aucun véhicule disponible") {{
+        JLabel label6 = new JLabel() {{
             setFont(new Font("Tahoma", Font.BOLD, 18));
             setHorizontalAlignment(CENTER);
         }};
@@ -66,10 +67,10 @@ public class AvailablesCarsPanel extends JPanel {
         JComboBox<String> comboBox1 = new JComboBox<String>() {{
             /*
             TODO NOE
-             Recuprer liste des categories et ajouter chaque catégorie avec le methode addItem
-             Ex : addItem("Categorie 1");
+             Recuprer liste des vehicules et ajouter chaque vehicule avec le methode addItem
+             Ex : addItem("YZ-DER-DR");
              Faire ça juste en dessous de ce commentaire
-             --> Definir le texte par defaut sur la premiere categorie
+             --> Definir le texte par defaut sur le premier vehicule
              */
         }};
 
@@ -92,22 +93,15 @@ public class AvailablesCarsPanel extends JPanel {
         //Buttons
         JButton button3 = new StyledButton("Soumettre") {{
             addActionListener(e -> {
-                ArrayList<String> vehicules = new ArrayList<>();
+                String immatriculation = (String) comboBox1.getSelectedItem();
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
                 String dateDebut = format.format(calendar1.getDate());
                 String dateFin = format.format(calendar2.getDate());
-                String categorie = (String) comboBox1.getSelectedItem();
                 /*
                 TODO NOE
-                 Pour chaque vehicule dispo, l'ajouter a la liste
-                 La liste doit contenir les plaques d'immatriculation
+                 Faire ta requete pour modifier
                  */
-                StringBuilder sb = new StringBuilder("<html>");
-                for (String vehicule : vehicules) {
-                    sb.append(vehicule).append("<br/><br/>");
-                }
-                sb.append("</html>");
-                label6.setText(sb.toString());
+                label6.setText("Calendrier de [" + immatriculation + "] modifié");
             });
         }};
 
@@ -131,9 +125,9 @@ public class AvailablesCarsPanel extends JPanel {
      *
      * @return panel
      */
-    public static synchronized AvailablesCarsPanel getInstance() {
+    public static synchronized ModifyResPanel getInstance() {
         if (instance == null) {
-            instance = new AvailablesCarsPanel();
+            instance = new ModifyResPanel();
         }
         return instance;
     }

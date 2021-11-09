@@ -37,7 +37,7 @@ public class Locave extends JPanel {
                 {
                     setSize(1500, 800);
                     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                    setIconImage(new ImageIcon("assets/locave.png").getImage());
+                    setIconImage(new ImageIcon("ressources/locave.png").getImage());
                     setResizable(false);
                     setLocationRelativeTo(null);
                     setContentPane(new MenuGUI());
@@ -55,7 +55,7 @@ public class Locave extends JPanel {
         frame = new JFrame("LocaVe - Connexion") {{
             setSize(300, 180);
             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            setIconImage(new ImageIcon("assets/lock.png").getImage());
+            setIconImage(new ImageIcon("ressources/lock.png").getImage());
             setResizable(false);
             setLocationRelativeTo(null);
             requestFocusInWindow();
