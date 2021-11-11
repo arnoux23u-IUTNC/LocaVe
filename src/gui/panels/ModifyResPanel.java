@@ -5,7 +5,6 @@ import gui.*;
 
 import java.awt.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.*;
 
@@ -14,6 +13,7 @@ import javax.swing.*;
  * Utilisation du patron singleton
  *
  * @author arnoux23u
+ * @author steiner58u
  */
 public class ModifyResPanel extends JPanel {
 
@@ -95,13 +95,21 @@ public class ModifyResPanel extends JPanel {
             addActionListener(e -> {
                 String immatriculation = (String) comboBox1.getSelectedItem();
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                String dateDebut = format.format(calendar1.getDate());
-                String dateFin = format.format(calendar2.getDate());
-                /*
-                TODO NOE
-                 Faire ta requete pour modifier
-                 */
-                label6.setText("Calendrier de [" + immatriculation + "] modifié");
+                Date date1 = calendar1.getDate();
+                Date date2 = calendar2.getDate();
+                if (date1.before(date2) || date1.equals(date2)) {
+                    String dateDebut = format.format(date1);
+                    String dateFin = format.format(date2);
+                    if (immatriculation != null) {
+                        /*
+                        TODO NOE
+                         Faire ta requete pour modifier
+                         */
+                        label6.setText("Calendrier de [" + immatriculation + "] modifié");
+                    } else
+                        JOptionPane.showMessageDialog(null, "Immatriculation Incorrecte", "Error", JOptionPane.ERROR_MESSAGE);
+                } else
+                    JOptionPane.showMessageDialog(null, "La date de retour doit être après la date de départ", "Error", JOptionPane.ERROR_MESSAGE);
             });
         }};
 

@@ -4,8 +4,7 @@ import com.toedter.calendar.JCalendar;
 import gui.*;
 
 import java.awt.*;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.math.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.swing.*;
@@ -15,6 +14,7 @@ import javax.swing.*;
  * Utilisation du patron singleton
  *
  * @author arnoux23u
+ * @author steiner58u
  */
 public class CalculateCostPanel extends JPanel {
 
@@ -95,24 +95,31 @@ public class CalculateCostPanel extends JPanel {
         }};
 
         //Buttons
-        JButton button3 = new StyledButton("Soumettre") {{
-            addActionListener(e -> {
-                String modele = (String) comboBox1.getSelectedItem();
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                Date d1 = calendar1.getDate();
-                Date d2 = calendar2.getDate();
-                String dateDebut = format.format(d1);
-                String dateFin = format.format(d2);
-                int nbJours = (int) ((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-                /*
-                TODO NOE
-                 Recuprer le prix de la location dans la variable prixLoc
-                 */
-                float prixLoc = 0;
-
-                label6.setText("<html>Nombre de jours loués : " + nbJours + "<br/><br/>Coût de la location : " + new BigDecimal(prixLoc).setScale(2, RoundingMode.HALF_UP) + " €</html>");
-            });
-        }};
+        JButton button3 = new StyledButton("Soumettre") {
+            {
+                addActionListener(e -> {
+                    String modele = (String) comboBox1.getSelectedItem();
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                    Date d1 = calendar1.getDate();
+                    Date d2 = calendar2.getDate();
+                    if (d1.before(d2) || d1.equals(d2)) {
+                        String dateDebut = format.format(d1);
+                        String dateFin = format.format(d2);
+                        int nbJours = (int) ((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+                        if (modele != null) {
+                            /*
+                            TODO NOE
+                             Recuprer le prix de la location dans la variable prixLoc
+                             */
+                            float prixLoc = 0;
+                            label6.setText("<html>Nombre de jours loués : " + nbJours + "<br/><br/>Coût de la location : " + new BigDecimal(prixLoc).setScale(2, RoundingMode.HALF_UP) + " €</html>");
+                        } else
+                            JOptionPane.showMessageDialog(null, "Le modèle ne doit pas être nul", "Erreur", JOptionPane.ERROR_MESSAGE);
+                    } else
+                        JOptionPane.showMessageDialog(null, "La date de départ doit être inférieure à la date de retour", "Erreur", JOptionPane.ERROR_MESSAGE);
+                });
+            }
+        };
 
         add(label1, BorderLayout.PAGE_START);
         panel2.add(label3, MenuGUI.createConstraint(0, 0, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 0, 0, 0, 20, 0, 0));
@@ -127,6 +134,7 @@ public class CalculateCostPanel extends JPanel {
         panel1.add(button3, MenuGUI.createConstraint(3, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 80, 0, 80, 0, 0, 0));
         panel5.add(panel1, BorderLayout.NORTH);
         panel5.add(label6, BorderLayout.CENTER);
+
         add(panel5);
     }
 

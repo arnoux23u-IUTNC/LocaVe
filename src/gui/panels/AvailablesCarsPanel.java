@@ -13,6 +13,7 @@ import javax.swing.*;
  * Utilisation du patron singleton
  *
  * @author arnoux23u
+ * @author steiner58u
  */
 public class AvailablesCarsPanel extends JPanel {
 
@@ -94,20 +95,28 @@ public class AvailablesCarsPanel extends JPanel {
             addActionListener(e -> {
                 ArrayList<String> vehicules = new ArrayList<>();
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                String dateDebut = format.format(calendar1.getDate());
-                String dateFin = format.format(calendar2.getDate());
-                String categorie = (String) comboBox1.getSelectedItem();
-                /*
-                TODO NOE
-                 Pour chaque vehicule dispo, l'ajouter a la liste
-                 La liste doit contenir les plaques d'immatriculation
-                 */
-                StringBuilder sb = new StringBuilder("<html>");
-                for (String vehicule : vehicules) {
-                    sb.append(vehicule).append("<br/><br/>");
-                }
-                sb.append("</html>");
-                label6.setText(sb.toString());
+                Date date1 = calendar1.getDate();
+                Date date2 = calendar2.getDate();
+                if (date1.before(date2) || date1.equals(date2)) {
+                    String dateDebut = format.format(calendar1.getDate());
+                    String dateFin = format.format(calendar2.getDate());
+                    String categorie = (String) comboBox1.getSelectedItem();
+                    if (categorie != null) {
+                        /*
+                        TODO NOE
+                         Pour chaque vehicule dispo, l'ajouter a la liste
+                         La liste doit contenir les plaques d'immatriculation
+                        */
+                        StringBuilder sb = new StringBuilder("<html>");
+                        for (String vehicule : vehicules) {
+                            sb.append(vehicule).append("<br/><br/>");
+                        }
+                        sb.append("</html>");
+                        label6.setText(sb.toString());
+                    } else
+                        JOptionPane.showMessageDialog(null, "La catégorie ne doit pas être nulle", "Erreur", JOptionPane.ERROR_MESSAGE);
+                } else
+                    JOptionPane.showMessageDialog(null, "La date de départ doit être inférieure à la date de retour", "Erreur", JOptionPane.ERROR_MESSAGE);
             });
         }};
 
