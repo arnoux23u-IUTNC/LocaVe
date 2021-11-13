@@ -76,32 +76,16 @@ public class AvailablesCarsPanel extends JPanel {
              Faire ça juste en dessous de ce commentaire
              --> Definir le texte par defaut sur la premiere categorie
              */
-            Connection connection = null;
             try {
-                connection = JDBCConnector.connect();
-            } catch (JDBCException e) {
-                e.printStackTrace();
-            }
-            String sql = "select LIBELLE from CATEGORIE";
-            ResultSet resultSet = null;
-            try {
-                assert connection != null;
-                resultSet = connection.createStatement().executeQuery(sql);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            while (true) {
-                try {
-                    assert resultSet != null;
-                    if (!resultSet.next()) break;
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                Connection connection = JDBCConnector.connect();
+                if (connection != null) {
+                    ResultSet resultSet = connection.prepareStatement("SELECT LIBELLE FROM CATEGORIE").executeQuery();
+                    while (resultSet.next()) {
+                        addItem(resultSet.getString("LIBELLE"));
+                    }
                 }
-                try {
-                    addItem(resultSet.getString("LIBELLE"));
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+            } catch (JDBCException | SQLException e) {
+                e.printStackTrace();
             }
         }};
 
@@ -138,12 +122,27 @@ public class AvailablesCarsPanel extends JPanel {
                          Pour chaque vehicule dispo, l'ajouter a la liste
                          La liste doit contenir les plaques d'immatriculation
                         */
-                        StringBuilder sb = new StringBuilder("<html>");
-                        for (String vehicule : vehicules) {
-                            sb.append(vehicule).append("<br/><br/>");
+                        try {
+                            Connection connection = JDBCConnector.connect();
+                            if (connection != null) {
+                                ResultSet resultSet = connection.prepareStatement(
+                                        "SELECT NO_IMM\n" +
+                                        "FROM VEHICULE\n" +
+                                        "WHERE CODE_CATEG LIKE " + categorie + "\n" +
+                                        "MINUS\n" +
+                                        "SELECT V.NO_IMM\n" +
+                                        "FROM CALENDRIER C\n" +
+                                        "         INNER JOIN VEHICULE V ON V.NO_IMM = C.NO_IMM\n" +
+                                        "WHERE DATEJOUR BETWEEN to_date(" + dateDebut + ", 'YYYY/MM/DD') AND to_date(" + dateFin + ", 'YYYY/MM/DD')\n" +
+                                        "  AND PASLIBRE LIKE 'x'").executeQuery();
+                                while (resultSet.next()) {
+                                    vehicules.add(resultSet.getString("NO_IMM"));
+                                }
+                            }
+                        } catch (JDBCException | SQLException e2) {
+                            e2.printStackTrace();
                         }
-                        sb.append("</html>");
-                        label6.setText(sb.toString());
+
                     } else
                         JOptionPane.showMessageDialog(null, "La catégorie ne doit pas être nulle", "Erreur", JOptionPane.ERROR_MESSAGE);
                 } else
