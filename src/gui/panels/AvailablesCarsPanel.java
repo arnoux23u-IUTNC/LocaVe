@@ -78,8 +78,9 @@ public class AvailablesCarsPanel extends JPanel {
              */
             try {
                 Connection connection = JDBCConnector.connect();
+                String sql = "SELECT LIBELLE FROM CATEGORIE";
                 if (connection != null) {
-                    ResultSet resultSet = connection.prepareStatement("SELECT LIBELLE FROM CATEGORIE").executeQuery();
+                    ResultSet resultSet = connection.prepareStatement(sql).executeQuery();
                     while (resultSet.next()) {
                         addItem(resultSet.getString("LIBELLE"));
                     }
@@ -124,17 +125,21 @@ public class AvailablesCarsPanel extends JPanel {
                         */
                         try {
                             Connection connection = JDBCConnector.connect();
+                            String sql = "SELECT NO_IMM, MODELE\n" +
+                                    "FROM VEHICULE\n" +
+                                    "WHERE CODE_CATEG LIKE ? \n" +
+                                    "MINUS\n" +
+                                    "SELECT V.NO_IMM, V.MODELE\n" +
+                                    "FROM CALENDRIER C\n" +
+                                    "         INNER JOIN VEHICULE V ON V.NO_IMM = C.NO_IMM\n" +
+                                    "WHERE DATEJOUR BETWEEN to_date(?, 'YYYY/MM/DD') AND to_date(?, 'YYYY/MM/DD')\n" +
+                                    "  AND PASLIBRE LIKE 'x'";
                             if (connection != null) {
-                                ResultSet resultSet = connection.prepareStatement(
-                                        "SELECT NO_IMM\n" +
-                                        "FROM VEHICULE\n" +
-                                        "WHERE CODE_CATEG LIKE " + categorie + "\n" +
-                                        "MINUS\n" +
-                                        "SELECT V.NO_IMM\n" +
-                                        "FROM CALENDRIER C\n" +
-                                        "         INNER JOIN VEHICULE V ON V.NO_IMM = C.NO_IMM\n" +
-                                        "WHERE DATEJOUR BETWEEN to_date(" + dateDebut + ", 'YYYY/MM/DD') AND to_date(" + dateFin + ", 'YYYY/MM/DD')\n" +
-                                        "  AND PASLIBRE LIKE 'x'").executeQuery();
+                                PreparedStatement statement = connection.prepareStatement(sql);
+                                statement.setString(1, categorie);
+                                statement.setString(2, dateDebut);
+                                statement.setString(3, dateFin);
+                                ResultSet resultSet = statement.executeQuery();
                                 while (resultSet.next()) {
                                     vehicules.add(resultSet.getString("NO_IMM"));
                                 }
