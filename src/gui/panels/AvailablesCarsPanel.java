@@ -1,14 +1,9 @@
 package gui.panels;
 
-import com.toedter.calendar.*;
-import connection.JDBCConnector;
-import connection.JDBCException;
+import com.toedter.calendar.JCalendar;
 import gui.*;
 
 import java.awt.*;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -77,33 +72,6 @@ public class AvailablesCarsPanel extends JPanel {
             Faire ça juste en dessous de ce commentaire
             --> Definir le texte par defaut sur la premiere categorie
              */
-            Connection connection = null;
-            try {
-                connection = JDBCConnector.connect();
-            } catch (JDBCException e) {
-                e.printStackTrace();
-            }
-            String sql = "select LIBELLE from CATEGORIE";
-            ResultSet resultSet = null;
-            try {
-                assert connection != null;
-                resultSet = connection.createStatement().executeQuery(sql);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            while (true) {
-                try {
-                    assert resultSet != null;
-                    if (!resultSet.next()) break;
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    addItem(resultSet.getString("LIBELLE"));
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }};
 
         //Dates and Calendars
