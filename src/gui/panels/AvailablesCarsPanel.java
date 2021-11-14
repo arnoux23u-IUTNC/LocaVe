@@ -1,8 +1,7 @@
 package gui.panels;
 
 import com.toedter.calendar.JCalendar;
-import connection.JDBCConnector;
-import connection.JDBCException;
+import connection.*;
 import gui.*;
 
 import java.awt.*;
@@ -68,23 +67,14 @@ public class AvailablesCarsPanel extends JPanel {
         }};
 
         //ComboBoxes
-        JComboBox<String> comboBox1 = new JComboBox<String>() {{
-            /*
-            TODO NOE
-             Recuprer liste des categories et ajouter chaque catégorie avec le methode addItem
-             Ex : addItem("Categorie 1");
-             Faire ça juste en dessous de ce commentaire
-             --> Definir le texte par defaut sur la premiere categorie
-             */
+        JComboBox<String> comboBox1 = new JComboBox<>() {{
             try {
                 Connection connection = JDBCConnector.connect();
-                String sql = "SELECT CODE_CATEG FROM CATEGORIE";
                 if (connection != null) {
-                    PreparedStatement statement = connection.prepareStatement(sql);
+                    PreparedStatement statement = connection.prepareStatement("SELECT LIBELLE FROM CATEGORIE");
                     ResultSet resultSet = statement.executeQuery();
-                    while (resultSet.next()) {
+                    while (resultSet.next())
                         addItem(resultSet.getString("LIBELLE"));
-                    }
                 }
             } catch (JDBCException | SQLException e) {
                 e.printStackTrace();
@@ -108,47 +98,52 @@ public class AvailablesCarsPanel extends JPanel {
         }};
 
         //Buttons
-        JButton button3 = new StyledButton("Soumettre") {{
-            addActionListener(e -> {
-                ArrayList<String> vehicules = new ArrayList<>();
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                Date date1 = calendar1.getDate();
-                Date date2 = calendar2.getDate();
-                if (date1.before(date2) || date1.equals(date2)) {
-                    String dateDebut = format.format(calendar1.getDate());
-                    String dateFin = format.format(calendar2.getDate());
-                    String categorie = (String) comboBox1.getSelectedItem();
-                    if (categorie != null) {
-                        /*
-                        TODO NOE
-                         Pour chaque vehicule dispo, l'ajouter a la liste
-                         La liste doit contenir les plaques d'immatriculation
-                        */
-                        try {
-                            Connection connection = JDBCConnector.connect();
-                            String sql = "SELECT NO_IMM, MODELE FROM VEHICULE WHERE CODE_CATEG LIKE ? MINUS SELECT V.NO_IMM, V.MODELE FROM CALENDRIER C INNER JOIN VEHICULE V ON V.NO_IMM = C.NO_IMM WHERE DATEJOUR BETWEEN to_date(?, 'YYYY-MM-DD') AND to_date(?, 'YYYY-MM-DD') AND PASLIBRE LIKE 'x'";
-                            if (connection != null) {
-                                PreparedStatement statement = connection.prepareStatement(sql);
-                                statement.setString(1, categorie);
-                                statement.setString(2, dateDebut);
-                                statement.setString(3, dateFin);
-                                ResultSet resultSet = statement.executeQuery();
-                                while (resultSet.next()) {
-                                    vehicules.add(resultSet.getString("NO_IMM"));
+        JButton button3 = new StyledButton("Soumettre") {
+            {
+                addActionListener(e -> {
+                    ArrayList<String> vehicules = new ArrayList<>();
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                    Date date1 = calendar1.getDate();
+                    Date date2 = calendar2.getDate();
+                    if (date1.before(date2) || date1.equals(date2)) {
+                        String dateDebut = format.format(calendar1.getDate());
+                        String dateFin = format.format(calendar2.getDate());
+                        String categorie = (String) comboBox1.getSelectedItem();
+                        if (categorie != null) {
+                            try {
+                                Connection connection = JDBCConnector.connect();
+                                if (connection != null) {
+                                    PreparedStatement statement = connection.prepareStatement("SELECT NO_IMM FROM VEHICULE V INNER JOIN CATEGORIE C ON V.CODE_CATEG = C.CODE_CATEG WHERE C.LIBELLE LIKE ? MINUS SELECT V.NO_IMM FROM CALENDRIER C INNER JOIN VEHICULE V ON V.NO_IMM = C.NO_IMM WHERE DATEJOUR BETWEEN to_date(?, 'YYYY-MM-DD') AND to_date(?, 'YYYY-MM-DD') AND PASLIBRE LIKE 'x'");
+                                    statement.setString(1, categorie);
+                                    statement.setString(2, dateDebut);
+                                    statement.setString(3, dateFin);
+                                    ResultSet resultSet = statement.executeQuery();
+                                    while (resultSet.next()) {
+                                        vehicules.add(resultSet.getString("NO_IMM"));
+                                    }
                                 }
+                            } catch (JDBCException | SQLException e2) {
+                                e2.printStackTrace();
                             }
-                        } catch (JDBCException | SQLException e2) {
-                            e2.printStackTrace();
-                        }
-
+                            StringBuilder sb = new StringBuilder("<html>");
+                            if (vehicules.size() == 0) {
+                                label6.setText("Aucun véhicule disponible");
+                            } else {
+                                for (String vehicule : vehicules)
+                                    sb.append(vehicule).append("<br/><br/>");
+                                sb.append("</html>");
+                                label6.setText(sb.toString());
+                            }
+                        } else
+                            JOptionPane.showMessageDialog(null, "La catégorie ne doit pas être nulle", "Erreur", JOptionPane.ERROR_MESSAGE);
                     } else
-                        JOptionPane.showMessageDialog(null, "La catégorie ne doit pas être nulle", "Erreur", JOptionPane.ERROR_MESSAGE);
-                } else
-                    JOptionPane.showMessageDialog(null, "La date de départ doit être inférieure à la date de retour", "Erreur", JOptionPane.ERROR_MESSAGE);
-            });
-        }};
+                        JOptionPane.showMessageDialog(null, "La date de départ doit être inférieure à la date de retour", "Erreur", JOptionPane.ERROR_MESSAGE);
+                });
+            }
+        };
 
         add(label1, BorderLayout.PAGE_START);
+
         add(label6, BorderLayout.CENTER);
         panel2.add(label3);
         panel2.add(comboBox1);
@@ -160,6 +155,7 @@ public class AvailablesCarsPanel extends JPanel {
         panel4.add(calendar2, MenuGUI.createConstraint(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 25, 0, 0, 0, 0, 0));
         panel1.add(panel4, MenuGUI.createConstraint(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 0, 0, 0, 0, 0, 0));
         panel1.add(button3, MenuGUI.createConstraint(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 0, 0, 0, 0, 0, 0));
+
         add(panel1, BorderLayout.LINE_START);
     }
 
