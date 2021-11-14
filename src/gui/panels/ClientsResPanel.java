@@ -1,11 +1,11 @@
 package gui.panels;
 
-import connection.JDBCConnector;
-import connection.JDBCException;
+import connection.*;
 import gui.*;
 
 import java.awt.*;
 import java.sql.*;
+import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
@@ -63,53 +63,51 @@ public class ClientsResPanel extends JPanel {
         //Buttons
         StyledButton rechercher = new StyledButton("Rechercher") {{
             addActionListener(e -> {
-                String[][] data;
-                String[] headers = new String[2];
+                panel3.removeAll();
+                ArrayList<ArrayList<String>> data = new ArrayList<>();
+                String[] headers = new String[]{"Code Client", "Nom","Adresse"};
                 try {
                     int nbModeles = Integer.parseInt(jTextField.getText());
                     if (nbModeles > 0) {
-                        /*
-                        TODO NOE
-                            Recuperer toutes les colonnes et toutes les valeurs des clients ayant loué un certain nombre de modèles de vehicules
-                            Exemple :
-                            String[] headers = {"Nom","Prenom"};
-                            String[][] data = {{"BIGRON","Steven"},{"ST1NERE","Noere"},{"MISKINE","Anto"},{"V","Thomthom"}};
-                         */
                         try {
                             Connection connection = JDBCConnector.connect();
-                            String sql = "select c.CODE_CLI, count( distinct v.MODELE) from CLIENT C inner join DOSSIER D on C.CODE_CLI = D.CODE_CLI inner join VEHICULE v on v.NO_IMM = d.NO_IMM having count(distinct v.MODELE) = 2 group by c.CODE_CLI order by c.CODE_CLI";
+                            String sql = "SELECT C.* FROM CLIENT C INNER JOIN DOSSIER D ON C.CODE_CLI = D.CODE_CLI INNER JOIN VEHICULE v ON v.NO_IMM = d.NO_IMM HAVING COUNT(DISTINCT V.MODELE) = ? GROUP BY C.CODE_CLI, NOM, RUE, VILLE, CODPOSTAL ORDER BY c.CODE_CLI";
                             if (connection != null) {
                                 PreparedStatement statement = connection.prepareStatement(sql);
+                                statement.setInt(1, nbModeles);
                                 ResultSet resultSet = statement.executeQuery();
-                                ResultSetMetaData rsmd = resultSet.getMetaData();
-                                String name = rsmd.getColumnName(1);
-                                String name2 = rsmd.getColumnName(2);
-                                headers[0] = name;
-                                headers[1] = name2;
                                 while (resultSet.next()) {
-
+                                    data.add(new ArrayList<>() {{
+                                        add(resultSet.getString("CODE_CLI"));
+                                        add(resultSet.getString("NOM"));
+                                        add(resultSet.getString("RUE") + " - " + resultSet.getString("CODPOSTAL") + " - " + resultSet.getString("VILLE"));
+                                    }});
                                 }
+                                String[][] dataArray = new String[data.size()][headers.length];
+                                for (int i = 0; i < data.size(); i++) {
+                                    for (int j = 0; j < headers.length; j++) {
+                                        dataArray[i][j] = data.get(i).get(j);
+                                    }
+                                }
+                                displayed = new JTable(dataArray, headers) {{
+                                    setPreferredSize(new Dimension(100, 100));
+                                    setFont(new Font("Tahoma", Font.PLAIN, 20));
+                                    setRowHeight(40);
+                                    setEnabled(false);
+                                }};
+                                panel3.add(((JTable) displayed).getTableHeader(), BorderLayout.NORTH);
+                                panel3.add(displayed, BorderLayout.CENTER);
+                                repaint();
+                                revalidate();
                             }
                         } catch (JDBCException | SQLException e1) {
                             e1.printStackTrace();
                         }
-                        headers = new String[]{"Nom", "Prenom", "Adresse", "Note"};
-                        data = new String[][]{{"BIGRON", "Steven", "Rue du reveil", "ABSENT"}, {"ST1NERE", "Noere", "Rue du malade", "MORT"}, {"MISKINE", "Anto", "Rue du $magik", "FAUX ACCENT"}, {"V", "Thomthom", "Rue du Java", "THREAD"}};
-                        displayed = new JTable(data, headers) {{
-                            setPreferredSize(new Dimension(100, 100));
-                            setFont(new Font("Tahoma", Font.PLAIN, 20));
-                            setRowHeight(40);
-                            setEnabled(false);
-                        }};
-                        panel3.add(((JTable) displayed).getTableHeader(), BorderLayout.NORTH);
-                        panel3.add(displayed, BorderLayout.CENTER);
                     } else
                         JOptionPane.showMessageDialog(null, "Le nombre de modèles doit être supérieur à 0");
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(null, "Veuillez entrer un nombre valide", "Erreur", JOptionPane.ERROR_MESSAGE);
                 }
-                revalidate();
-                repaint();
             });
         }};
 
