@@ -132,6 +132,22 @@ public class CalculateCostPanel extends JPanel {
                              */
                             float prixLoc = 0;
                             label6.setText("<html>Nombre de jours loués : " + nbJours + "<br/><br/>Coût de la location : " + new BigDecimal(prixLoc).setScale(2, RoundingMode.HALF_UP) + " €</html>");
+                            try {
+                                Connection connection = JDBCConnector.connect();
+                                String sql = "select (TARIF_JOUR * (select to_date(?, 'yyyy-mm-dd') - to_date(?, 'yyyy-mm-dd') from dual)) from TARIF inner join CATEGORIE C2 on TARIF.CODE_TARIF = C2.CODE_TARIF inner join VEHICULE V on C2.CODE_CATEG = V.CODE_CATEG where V.MODELE = ?";
+                                if (connection != null) {
+                                    PreparedStatement statement = connection.prepareStatement(sql);
+                                    ResultSet resultSet = statement.executeQuery();
+                                    statement.setString(1, dateDebut);
+                                    statement.setString(2, dateFin);
+                                    statement.setString(3, modele);
+                                    while (resultSet.next()) {
+                                        prixLoc = resultSet.getInt(1);
+                                    }
+                                }
+                            } catch (JDBCException | SQLException e1) {
+                                e1.printStackTrace();
+                            }
                         } else
                             JOptionPane.showMessageDialog(null, "Le modèle ne doit pas être nul", "Erreur", JOptionPane.ERROR_MESSAGE);
                     } else

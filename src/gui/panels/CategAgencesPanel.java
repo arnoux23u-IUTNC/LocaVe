@@ -4,10 +4,7 @@ import connection.JDBCConnector;
 import connection.JDBCException;
 
 import java.awt.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
@@ -84,8 +81,8 @@ public class CategAgencesPanel extends JPanel {
      */
     public void actualise() {
         panel1.removeAll();
-        String[][] data;
-        String[] headers;
+        String[][] data = new String[10][];
+        String[] headers = new String[1];
         /*
         TODO NOE
             Recuperer toutes les colonnes et toutes les valeurs de la Q4 et les stocker dans un tableau sous cette forme
@@ -99,8 +96,12 @@ public class CategAgencesPanel extends JPanel {
             if (connection != null) {
                 PreparedStatement statement = connection.prepareStatement(sql);
                 ResultSet resultSet = statement.executeQuery();
+                ResultSetMetaData rsmd = resultSet.getMetaData();
+                String name = rsmd.getColumnName(1);
+                headers[0] = name;
+                int i = 0;
                 while (resultSet.next()) {
-
+                    data[i][0] = resultSet.getString(name);
                 }
             }
         } catch (JDBCException | SQLException e) {

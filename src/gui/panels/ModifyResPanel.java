@@ -80,12 +80,12 @@ public class ModifyResPanel extends JPanel {
              */
             try {
                 Connection connection = JDBCConnector.connect();
-                String sql = "";
+                String sql = "SELECT NO_IMM FROM VEHICULE";
                 if (connection != null) {
                     PreparedStatement statement = connection.prepareStatement(sql);
                     ResultSet resultSet = statement.executeQuery();
                     while (resultSet.next()) {
-
+                        addItem(resultSet.getString("NO_IMM"));
                     }
                 }
             } catch (JDBCException | SQLException e1) {

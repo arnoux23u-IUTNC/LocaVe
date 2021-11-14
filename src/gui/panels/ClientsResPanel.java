@@ -5,10 +5,7 @@ import connection.JDBCException;
 import gui.*;
 
 import java.awt.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
@@ -67,7 +64,7 @@ public class ClientsResPanel extends JPanel {
         StyledButton rechercher = new StyledButton("Rechercher") {{
             addActionListener(e -> {
                 String[][] data;
-                String[] headers;
+                String[] headers = new String[2];
                 try {
                     int nbModeles = Integer.parseInt(jTextField.getText());
                     if (nbModeles > 0) {
@@ -84,6 +81,11 @@ public class ClientsResPanel extends JPanel {
                             if (connection != null) {
                                 PreparedStatement statement = connection.prepareStatement(sql);
                                 ResultSet resultSet = statement.executeQuery();
+                                ResultSetMetaData rsmd = resultSet.getMetaData();
+                                String name = rsmd.getColumnName(1);
+                                String name2 = rsmd.getColumnName(2);
+                                headers[0] = name;
+                                headers[1] = name2;
                                 while (resultSet.next()) {
 
                                 }
