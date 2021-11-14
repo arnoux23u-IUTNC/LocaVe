@@ -1,10 +1,10 @@
 package gui.panels;
 
-import connection.JDBCConnector;
-import connection.JDBCException;
+import connection.*;
 
 import java.awt.*;
 import java.sql.*;
+import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
@@ -81,47 +81,39 @@ public class CategAgencesPanel extends JPanel {
      */
     public void actualise() {
         panel1.removeAll();
-        String[][] data = new String[10][];
-        String[] headers = new String[1];
-        /*
-        TODO NOE
-            Recuperer toutes les colonnes et toutes les valeurs de la Q4 et les stocker dans un tableau sous cette forme
-            Exemple :
-            String[] headers = {"Nom","Prenom"};
-            String[][] data = {{"BIGRON","Steven"},{"ST1NERE","Noere"},{"MISKINE","Anto"},{"V","Thomthom"}};
-         */
+        ArrayList<ArrayList<String>> data = new ArrayList<>();
+        String[] headers = new String[]{"Code Agence", "Adresse"};
         try {
             Connection connection = JDBCConnector.connect();
-            String sql = "SELECT CODE_AG FROM VEHICULE V HAVING COUNT(DISTINCT CODE_CATEG) = (SELECT COUNT(CODE_CATEG) FROM CATEGORIE) GROUP BY CODE_AG";
+            String sql = "SELECT A.CODE_AG, A.RUE, A.VILLE, A.CODPOSTAL FROM VEHICULE V INNER JOIN AGENCE A ON V.CODE_AG = A.CODE_AG HAVING COUNT(DISTINCT CODE_CATEG) = (SELECT COUNT(CODE_CATEG) FROM CATEGORIE) GROUP BY A.CODE_AG, A.RUE, A.VILLE, A.CODPOSTAL";
             if (connection != null) {
                 PreparedStatement statement = connection.prepareStatement(sql);
                 ResultSet resultSet = statement.executeQuery();
-                ResultSetMetaData rsmd = resultSet.getMetaData();
-                String name = rsmd.getColumnName(1);
-                headers[0] = name;
-                int i = 0;
                 while (resultSet.next()) {
-                    data[i][0] = resultSet.getString(name);
+                    data.add(new ArrayList<>() {{
+                        add(resultSet.getString("CODE_AG"));
+                        add(resultSet.getString("RUE") + " - " + resultSet.getString("CODPOSTAL") + " - " + resultSet.getString("VILLE"));
+                    }});
                 }
+                String[][] dataArray = new String[data.size()][headers.length];
+                for (int i = 0; i < data.size(); i++) {
+                    for (int j = 0; j < headers.length; j++) {
+                        dataArray[i][j] = data.get(i).get(j);
+                    }
+                }
+                displayed = new JTable(dataArray, headers) {{
+                    setPreferredSize(new Dimension(100, 100));
+                    setFont(new Font("Tahoma", Font.PLAIN, 20));
+                    setRowHeight(40);
+                    setEnabled(false);
+                }};
+                panel1.add(((JTable) displayed).getTableHeader(), BorderLayout.NORTH);
+                panel1.add(displayed, BorderLayout.CENTER);
+                revalidate();
+                repaint();
             }
         } catch (JDBCException | SQLException e) {
             e.printStackTrace();
         }
-
-
-        headers = new String[]{"Nom", "Prenom", "Adresse", "Note"};
-        data = new String[][]{{"BIGRON", "Steven", "Rue du reveil", "ABSENT"}, {"ST1NERE", "Noere", "Rue du malade", "MORT"}, {"MISKINE", "Anto", "Rue du $magik", "FAUX ACCENT"}, {"V", "Thomthom", "Rue du Java", "THREAD"}};
-
-
-        displayed = new JTable(data, headers) {{
-            setPreferredSize(new Dimension(100, 100));
-            setFont(new Font("Tahoma", Font.PLAIN, 20));
-            setRowHeight(40);
-            setEnabled(false);
-        }};
-        panel1.add(((JTable) displayed).getTableHeader(), BorderLayout.NORTH);
-        panel1.add(displayed, BorderLayout.CENTER);
-        revalidate();
-        repaint();
     }
 }
