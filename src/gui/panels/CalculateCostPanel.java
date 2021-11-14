@@ -98,8 +98,8 @@ public class CalculateCostPanel extends JPanel {
         }};
 
         //Dates and Calendars
-        Date date1 = new Date(1441065600000L);
-        Date date2 = new Date(1448841600000L);
+        Date date1 = new Date(1443657600000L);
+        Date date2 = new Date(1446249600000L);
         JCalendar calendar1 = new JCalendar(date1) {{
             setPreferredSize(new Dimension(280, 180));
             setMinSelectableDate(date1);
