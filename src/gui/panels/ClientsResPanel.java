@@ -1,8 +1,14 @@
 package gui.panels;
 
+import connection.JDBCConnector;
+import connection.JDBCException;
 import gui.*;
 
 import java.awt.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
@@ -72,6 +78,19 @@ public class ClientsResPanel extends JPanel {
                             String[] headers = {"Nom","Prenom"};
                             String[][] data = {{"BIGRON","Steven"},{"ST1NERE","Noere"},{"MISKINE","Anto"},{"V","Thomthom"}};
                          */
+                        try {
+                            Connection connection = JDBCConnector.connect();
+                            String sql = "select c.CODE_CLI, count( distinct v.MODELE) from CLIENT C inner join DOSSIER D on C.CODE_CLI = D.CODE_CLI inner join VEHICULE v on v.NO_IMM = d.NO_IMM having count(distinct v.MODELE) = 2 group by c.CODE_CLI order by c.CODE_CLI";
+                            if (connection != null) {
+                                PreparedStatement statement = connection.prepareStatement(sql);
+                                ResultSet resultSet = statement.executeQuery();
+                                while (resultSet.next()) {
+
+                                }
+                            }
+                        } catch (JDBCException | SQLException e1) {
+                            e1.printStackTrace();
+                        }
                         headers = new String[]{"Nom", "Prenom", "Adresse", "Note"};
                         data = new String[][]{{"BIGRON", "Steven", "Rue du reveil", "ABSENT"}, {"ST1NERE", "Noere", "Rue du malade", "MORT"}, {"MISKINE", "Anto", "Rue du $magik", "FAUX ACCENT"}, {"V", "Thomthom", "Rue du Java", "THREAD"}};
                         displayed = new JTable(data, headers) {{

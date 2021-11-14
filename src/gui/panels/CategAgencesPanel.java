@@ -1,6 +1,13 @@
 package gui.panels;
 
+import connection.JDBCConnector;
+import connection.JDBCException;
+
 import java.awt.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
@@ -86,6 +93,19 @@ public class CategAgencesPanel extends JPanel {
             String[] headers = {"Nom","Prenom"};
             String[][] data = {{"BIGRON","Steven"},{"ST1NERE","Noere"},{"MISKINE","Anto"},{"V","Thomthom"}};
          */
+        try {
+            Connection connection = JDBCConnector.connect();
+            String sql = "SELECT CODE_AG FROM VEHICULE V HAVING COUNT(DISTINCT CODE_CATEG) = (SELECT COUNT(CODE_CATEG) FROM CATEGORIE) GROUP BY CODE_AG";
+            if (connection != null) {
+                PreparedStatement statement = connection.prepareStatement(sql);
+                ResultSet resultSet = statement.executeQuery();
+                while (resultSet.next()) {
+
+                }
+            }
+        } catch (JDBCException | SQLException e) {
+            e.printStackTrace();
+        }
 
 
         headers = new String[]{"Nom", "Prenom", "Adresse", "Note"};

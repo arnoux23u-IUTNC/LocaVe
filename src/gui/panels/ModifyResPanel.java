@@ -1,9 +1,15 @@
 package gui.panels;
 
 import com.toedter.calendar.JCalendar;
+import connection.JDBCConnector;
+import connection.JDBCException;
 import gui.*;
 
 import java.awt.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.*;
@@ -72,6 +78,19 @@ public class ModifyResPanel extends JPanel {
              Faire ça juste en dessous de ce commentaire
              --> Definir le texte par defaut sur le premier vehicule
              */
+            try {
+                Connection connection = JDBCConnector.connect();
+                String sql = "";
+                if (connection != null) {
+                    PreparedStatement statement = connection.prepareStatement(sql);
+                    ResultSet resultSet = statement.executeQuery();
+                    while (resultSet.next()) {
+
+                    }
+                }
+            } catch (JDBCException | SQLException e1) {
+                e1.printStackTrace();
+            }
         }};
 
         //Dates and Calendars
@@ -105,6 +124,19 @@ public class ModifyResPanel extends JPanel {
                         TODO NOE
                          Faire ta requete pour modifier
                          */
+                        try {
+                            Connection connection = JDBCConnector.connect();
+                            String sql = "";
+                            if (connection != null) {
+                                PreparedStatement statement = connection.prepareStatement(sql);
+                                ResultSet resultSet = statement.executeQuery();
+                                while (resultSet.next()) {
+
+                                }
+                            }
+                        } catch (JDBCException | SQLException e1) {
+                            e1.printStackTrace();
+                        }
                         label6.setText("Calendrier de [" + immatriculation + "] modifié");
                     } else
                         JOptionPane.showMessageDialog(null, "Immatriculation Incorrecte", "Error", JOptionPane.ERROR_MESSAGE);
