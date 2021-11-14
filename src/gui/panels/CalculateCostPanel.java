@@ -1,10 +1,16 @@
 package gui.panels;
 
 import com.toedter.calendar.JCalendar;
+import connection.JDBCConnector;
+import connection.JDBCException;
 import gui.*;
 
 import java.awt.*;
 import java.math.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.swing.*;
@@ -76,6 +82,19 @@ public class CalculateCostPanel extends JPanel {
              Faire ça juste en dessous de ce commentaire
              --> Definir le texte par defaut sur le premier modèle
              */
+            try {
+                Connection connection = JDBCConnector.connect();
+                String sql = "SELECT MODELE FROM VEHICULE";
+                if (connection != null) {
+                    PreparedStatement statement = connection.prepareStatement(sql);
+                    ResultSet resultSet = statement.executeQuery();
+                    while (resultSet.next()) {
+                        addItem(resultSet.getString("MODELE"));
+                    }
+                }
+            } catch (JDBCException | SQLException e) {
+                e.printStackTrace();
+            }
         }};
 
         //Dates and Calendars

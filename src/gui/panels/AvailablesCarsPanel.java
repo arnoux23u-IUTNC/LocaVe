@@ -78,9 +78,10 @@ public class AvailablesCarsPanel extends JPanel {
              */
             try {
                 Connection connection = JDBCConnector.connect();
-                String sql = "SELECT LIBELLE FROM CATEGORIE";
+                String sql = "SELECT CODE_CATEG FROM CATEGORIE";
                 if (connection != null) {
-                    ResultSet resultSet = connection.prepareStatement(sql).executeQuery();
+                    PreparedStatement statement = connection.prepareStatement(sql);
+                    ResultSet resultSet = statement.executeQuery();
                     while (resultSet.next()) {
                         addItem(resultSet.getString("LIBELLE"));
                     }
@@ -125,15 +126,7 @@ public class AvailablesCarsPanel extends JPanel {
                         */
                         try {
                             Connection connection = JDBCConnector.connect();
-                            String sql = "SELECT NO_IMM, MODELE\n" +
-                                    "FROM VEHICULE\n" +
-                                    "WHERE CODE_CATEG LIKE ? \n" +
-                                    "MINUS\n" +
-                                    "SELECT V.NO_IMM, V.MODELE\n" +
-                                    "FROM CALENDRIER C\n" +
-                                    "         INNER JOIN VEHICULE V ON V.NO_IMM = C.NO_IMM\n" +
-                                    "WHERE DATEJOUR BETWEEN to_date(?, 'YYYY/MM/DD') AND to_date(?, 'YYYY/MM/DD')\n" +
-                                    "  AND PASLIBRE LIKE 'x'";
+                            String sql = "SELECT NO_IMM, MODELE FROM VEHICULE WHERE CODE_CATEG LIKE ? MINUS SELECT V.NO_IMM, V.MODELE FROM CALENDRIER C INNER JOIN VEHICULE V ON V.NO_IMM = C.NO_IMM WHERE DATEJOUR BETWEEN to_date(?, 'YYYY-MM-DD') AND to_date(?, 'YYYY-MM-DD') AND PASLIBRE LIKE 'x'";
                             if (connection != null) {
                                 PreparedStatement statement = connection.prepareStatement(sql);
                                 statement.setString(1, categorie);
