@@ -1,15 +1,11 @@
 package gui.panels;
 
 import com.toedter.calendar.JCalendar;
-import connection.JDBCConnector;
-import connection.JDBCException;
+import connection.*;
 import gui.*;
 
 import java.awt.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.*;
@@ -48,13 +44,16 @@ public class ModifyResPanel extends JPanel {
             setFont(new Font("Tahoma", Font.BOLD, 18));
             setHorizontalAlignment(CENTER);
         }};
+        JLabel label7 = new JLabel("Disponibilité") {{
+            setHorizontalAlignment(CENTER);
+        }};
 
         //Panels
         JPanel panel1 = new JPanel() {{
             setPreferredSize(new Dimension(300, 225));
             setLayout(new GridBagLayout());
-            ((GridBagLayout) getLayout()).rowHeights = new int[]{0, 0, 0, 0, 0};
-            ((GridBagLayout) getLayout()).rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0E-4};
+            ((GridBagLayout) getLayout()).rowHeights = new int[]{0, 0, 0, 0, 0, 0};
+            ((GridBagLayout) getLayout()).rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
         }};
         JPanel panel2 = new JPanel() {{
             setPreferredSize(new Dimension(280, 60));
@@ -68,16 +67,17 @@ public class ModifyResPanel extends JPanel {
             setPreferredSize(new Dimension(280, 280));
             setLayout(new GridBagLayout());
         }};
+        JPanel panel5 = new JPanel() {{
+            setPreferredSize(new Dimension(280, 280));
+            setLayout(new BorderLayout());
+        }};
+        JPanel panel6 = new JPanel() {{
+            setPreferredSize(new Dimension(280, 280));
+            setLayout(new GridLayout(0, 2));
+        }};
 
         //ComboBoxes
-        JComboBox<String> comboBox1 = new JComboBox<String>() {{
-            /*
-            TODO NOE
-             Recuprer liste des vehicules et ajouter chaque vehicule avec le methode addItem
-             Ex : addItem("YZ-DER-DR");
-             Faire ça juste en dessous de ce commentaire
-             --> Definir le texte par defaut sur le premier vehicule
-             */
+        JComboBox<String> comboBox1 = new JComboBox<>() {{
             try {
                 Connection connection = JDBCConnector.connect();
                 String sql = "SELECT NO_IMM FROM VEHICULE";
@@ -92,6 +92,15 @@ public class ModifyResPanel extends JPanel {
                 e1.printStackTrace();
             }
         }};
+
+        //Radio
+        ButtonGroup group = new ButtonGroup();
+        JRadioButton radio1 = new JRadioButton("Reservé") {{
+            setSelected(true);
+        }};
+        JRadioButton radio2 = new JRadioButton("Disponible");
+        group.add(radio1);
+        group.add(radio2);
 
         //Dates and Calendars
         Date date1 = new Date(1443657600000L);
@@ -119,25 +128,24 @@ public class ModifyResPanel extends JPanel {
                 if (date1.before(date2) || date1.equals(date2)) {
                     String dateDebut = format.format(date1);
                     String dateFin = format.format(date2);
+                    boolean disponible = !radio1.isSelected();
                     if (immatriculation != null) {
-                        /*
-                        TODO NOE
-                         Faire ta requete pour modifier
-                         */
                         try {
                             Connection connection = JDBCConnector.connect();
-                            String sql = "";
                             if (connection != null) {
-                                PreparedStatement statement = connection.prepareStatement(sql);
-                                ResultSet resultSet = statement.executeQuery();
-                                while (resultSet.next()) {
-
-                                }
+                                PreparedStatement statement = connection.prepareStatement("UPDATE CALENDRIER SET PASLIBRE = ? WHERE NO_IMM LIKE ? AND DATEJOUR BETWEEN TO_DATE(?, 'YYYY-MM-DD') AND TO_DATE(?, 'YYYY-MM-DD')");
+                                statement.setString(1, (disponible ? null : "x"));
+                                statement.setString(2, immatriculation);
+                                statement.setString(3, dateDebut);
+                                statement.setString(4, dateFin);
+                                if (statement.executeUpdate() > 0)
+                                    label6.setText("Calendrier de [" + immatriculation + "] modifié");
+                                else
+                                    label6.setText("[" + immatriculation + "] n'est pas dans le calendrier");
                             }
                         } catch (JDBCException | SQLException e1) {
                             e1.printStackTrace();
                         }
-                        label6.setText("Calendrier de [" + immatriculation + "] modifié");
                     } else
                         JOptionPane.showMessageDialog(null, "Immatriculation Incorrecte", "Error", JOptionPane.ERROR_MESSAGE);
                 } else
@@ -156,7 +164,12 @@ public class ModifyResPanel extends JPanel {
         panel4.add(label5, MenuGUI.createConstraint(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 0, 0, 0, 0, 0, 0));
         panel4.add(calendar2, MenuGUI.createConstraint(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 25, 0, 0, 0, 0, 0));
         panel1.add(panel4, MenuGUI.createConstraint(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 0, 0, 0, 0, 0, 0));
-        panel1.add(button3, MenuGUI.createConstraint(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 0, 0, 0, 0, 0, 0));
+        panel5.add(label7, BorderLayout.NORTH);
+        panel6.add(radio1);
+        panel6.add(radio2);
+        panel5.add(panel6, BorderLayout.CENTER);
+        panel1.add(panel5, MenuGUI.createConstraint(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 0, 0, 0, 0, 0, 0));
+        panel1.add(button3, MenuGUI.createConstraint(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 20, 0, 0, 0, 0, 0));
         add(panel1, BorderLayout.LINE_START);
     }
 
