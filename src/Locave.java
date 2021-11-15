@@ -1,22 +1,17 @@
-import connection.JDBCConnector;
-import connection.JDBCException;
+import connection.*;
 import gui.MenuGUI;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.util.Arrays;
 
 public class Locave extends JPanel {
 
     private static final JTextField loginField = new JTextField(20);
     private static final JPasswordField passwordField = new JPasswordField(20);
-    private static final JLabel state = new JLabel("", SwingConstants.CENTER) {
-        {
-            setBounds(60, 80, 180, 25);
-        }
-    };
+    private static final JLabel state = new JLabel("", SwingConstants.CENTER) {{
+        setBounds(60, 80, 180, 25);
+    }};
     private static JFrame frame;
     private static final ActionListener ac = e -> {
         try {
@@ -24,7 +19,7 @@ public class Locave extends JPanel {
             state.setText("Connexion en cours");
             JDBCConnector.setUser(loginField.getText());
             JDBCConnector.setPassword(passwordField.getPassword());
-            Connection c = JDBCConnector.connect();
+            JDBCConnector.connect();
             state.setForeground(new Color(23, 138, 16));
             state.setText("Connecté");
             try {

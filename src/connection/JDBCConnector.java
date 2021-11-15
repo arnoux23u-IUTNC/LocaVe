@@ -1,6 +1,5 @@
 package connection;
 
-import java.io.*;
 import java.sql.*;
 
 /**
