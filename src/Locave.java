@@ -22,14 +22,9 @@ public class Locave extends JPanel {
             JDBCConnector.connect();
             state.setForeground(new Color(23, 138, 16));
             state.setText("Connecté");
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                Thread.currentThread().interrupt();
-            }
-            frame.dispose();
-            new JFrame("LocaVe - Bienvenue") {
-                {
+            new Timer(1000, c -> {
+                frame.dispose();
+                new JFrame("LocaVe - Bienvenue") {{
                     setSize(1500, 800);
                     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     setIconImage(new ImageIcon("assets/locave.png").getImage());
@@ -38,8 +33,10 @@ public class Locave extends JPanel {
                     setContentPane(new MenuGUI());
                     setVisible(true);
                     new Locave();
-                }
-            };
+                }};
+            }) {{
+                setRepeats(false);
+            }}.start();
         } catch (JDBCException ex) {
             state.setForeground(Color.red);
             state.setText(String.valueOf(ex.getMessage()));
@@ -70,12 +67,11 @@ public class Locave extends JPanel {
                 passwordField.setBounds(100, 40, 160, 25);
                 passwordField.addActionListener(ac);
                 add(passwordField);
-                add(new JButton("Login") {
-                    {
+                add(new JButton("Login") {{
                         setBounds(110, 110, 80, 25);
                         addActionListener(ac);
-                    }
-                });
+                    }}
+                );
                 add(state);
             }});
             setVisible(true);
