@@ -3,6 +3,7 @@ package gui;
 import gui.panels.*;
 
 import java.awt.*;
+import java.util.Objects;
 import javax.swing.*;
 import javax.swing.border.*;
 
@@ -58,26 +59,26 @@ public class MenuGUI extends JPanel {
 
         //Labels
         JLabel label1 = new JLabel() {{
-            setIcon(new ImageIcon("ressources/locave.png"));
+            setIcon(new ImageIcon(Objects.requireNonNull(getClass().getClassLoader().getResource("locave.png"))));
             setHorizontalAlignment(SwingConstants.CENTER);
         }};
         JLabel label2 = new JLabel() {{
-            setIcon(new ImageIcon("ressources/calendar.png"));
+            setIcon(new ImageIcon(Objects.requireNonNull(getClass().getClassLoader().getResource("calendar.png"))));
         }};
         JLabel label3 = new JLabel() {{
-            setIcon(new ImageIcon("ressources/cash.png"));
+            setIcon(new ImageIcon(Objects.requireNonNull(getClass().getClassLoader().getResource("cash.png"))));
         }};
         JLabel label4 = new JLabel() {{
-            setIcon(new ImageIcon("ressources/car.png"));
+            setIcon(new ImageIcon(Objects.requireNonNull(getClass().getClassLoader().getResource("car.png"))));
         }};
         JLabel label5 = new JLabel() {{
-            setIcon(new ImageIcon("ressources/client.png"));
+            setIcon(new ImageIcon(Objects.requireNonNull(getClass().getClassLoader().getResource("client.png"))));
         }};
         JLabel label6 = new JLabel() {{
-            setIcon(new ImageIcon("ressources/agence.png"));
+            setIcon(new ImageIcon(Objects.requireNonNull(getClass().getClassLoader().getResource("agence.png"))));
         }};
         JLabel label7 = new JLabel() {{
-            setIcon(new ImageIcon("ressources/list.png"));
+            setIcon(new ImageIcon(Objects.requireNonNull(getClass().getClassLoader().getResource("list.png"))));
         }};
 
         //Boutons
