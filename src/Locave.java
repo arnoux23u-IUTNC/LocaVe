@@ -1,22 +1,17 @@
-import connection.JDBCConnector;
-import connection.JDBCException;
+import connection.*;
 import gui.MenuGUI;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.util.Arrays;
 
 public class Locave extends JPanel {
 
     private static final JTextField loginField = new JTextField(20);
     private static final JPasswordField passwordField = new JPasswordField(20);
-    private static final JLabel state = new JLabel("", SwingConstants.CENTER) {
-        {
-            setBounds(60, 80, 180, 25);
-        }
-    };
+    private static final JLabel state = new JLabel("", SwingConstants.CENTER) {{
+        setBounds(60, 80, 180, 25);
+    }};
     private static JFrame frame;
     private static final ActionListener ac = e -> {
         try {
@@ -24,17 +19,12 @@ public class Locave extends JPanel {
             state.setText("Connexion en cours");
             JDBCConnector.setUser(loginField.getText());
             JDBCConnector.setPassword(passwordField.getPassword());
-            Connection c = JDBCConnector.connect();
+            JDBCConnector.connect();
             state.setForeground(new Color(23, 138, 16));
             state.setText("Connecté");
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                Thread.currentThread().interrupt();
-            }
-            frame.dispose();
-            new JFrame("LocaVe - Bienvenue") {
-                {
+            new Timer(1000, c -> {
+                frame.dispose();
+                new JFrame("LocaVe - Bienvenue") {{
                     setSize(1500, 800);
                     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     setIconImage(new ImageIcon("ressources/locave.png").getImage());
@@ -43,8 +33,10 @@ public class Locave extends JPanel {
                     setContentPane(new MenuGUI());
                     setVisible(true);
                     new Locave();
-                }
-            };
+                }};
+            }) {{
+                setRepeats(false);
+            }}.start();
         } catch (JDBCException ex) {
             state.setForeground(Color.red);
             state.setText(String.valueOf(ex.getMessage()));
@@ -75,12 +67,11 @@ public class Locave extends JPanel {
                 passwordField.setBounds(100, 40, 160, 25);
                 passwordField.addActionListener(ac);
                 add(passwordField);
-                add(new JButton("Login") {
-                    {
+                add(new JButton("Login") {{
                         setBounds(110, 110, 80, 25);
                         addActionListener(ac);
-                    }
-                });
+                    }}
+                );
                 add(state);
             }});
             setVisible(true);
