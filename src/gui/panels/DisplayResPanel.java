@@ -127,6 +127,7 @@ public class DisplayResPanel extends JPanel {
                     setEnabled(false);
                     getColumn("Date Retrait").setPreferredWidth(150);
                     getColumn("Client").setPreferredWidth(150);
+                    getColumn("Agence Retour").setPreferredWidth(150);
                     getColumn("Immat").setPreferredWidth(150);
                     getColumn("Assurance").setCellRenderer(center);
                     getColumn("Tarif").setCellRenderer(center);
