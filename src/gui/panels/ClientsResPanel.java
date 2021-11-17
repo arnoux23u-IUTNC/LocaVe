@@ -65,7 +65,7 @@ public class ClientsResPanel extends JPanel {
             addActionListener(e -> {
                 panel3.removeAll();
                 ArrayList<ArrayList<String>> data = new ArrayList<>();
-                String[] headers = new String[]{"Code Client", "Nom","Adresse"};
+                String[] headers = new String[]{"Code Client", "Nom", "Adresse"};
                 try {
                     int nbModeles = Integer.parseInt(jTextField.getText());
                     if (nbModeles > 0) {
