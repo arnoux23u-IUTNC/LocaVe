@@ -16,7 +16,17 @@ public class MenuGUI extends JPanel {
     /**
      * Objet representant l'ancien JPanel affiche
      */
-    private JPanel oldPane = null;
+    private JPanel oldPane = new JPanel() {{
+        setLayout(new BorderLayout());
+        add(new JLabel("Bienvenue sur Locave") {{
+            setHorizontalAlignment(CENTER);
+            setFont(new Font("Arial", Font.BOLD, 40));
+        }}, BorderLayout.CENTER);
+        add(new JLabel("<html>ARNOUX Guillaume - STEINER Noe<br/><br/></html>") {{
+            setHorizontalAlignment(CENTER);
+            setFont(new Font("Arial", Font.BOLD, 15));
+        }}, BorderLayout.SOUTH);
+    }};
 
     /**
      * Constructeur public par defaut
@@ -27,7 +37,7 @@ public class MenuGUI extends JPanel {
         //Panels
         JPanel panel1 = new JPanel() {{
             setLayout(new BorderLayout());
-            setBorder(new LineBorder(new Color(0,0,200), 2));
+            setBorder(new LineBorder(new Color(0, 0, 200), 2));
         }};
         JPanel panel2 = new JPanel() {{
             setLayout(new BorderLayout());
@@ -67,9 +77,6 @@ public class MenuGUI extends JPanel {
             setIcon(new ImageIcon("ressources/agence.png"));
         }};
         JLabel label7 = new JLabel() {{
-            setIcon(new ImageIcon("ressources/check.png"));
-        }};
-        JLabel label8 = new JLabel() {{
             setIcon(new ImageIcon("ressources/list.png"));
         }};
 
@@ -79,41 +86,75 @@ public class MenuGUI extends JPanel {
         JButton button3 = new StyledButton("Calcul montant r\u00e9serv.");
         JButton button4 = new StyledButton("Cat\u00e9gories v\u00e9hic. agence");
         JButton button5 = new StyledButton("Clients fid\u00e8les");
-        JButton button6 = new StyledButton("Clore r\u00e9servation");
-        JButton button7 = new StyledButton("Affichage r\u00e9servations");
+        JButton button6 = new StyledButton("Affichage r\u00e9servations");
 
         //Panels internes
-        JPanel p1 = AvailablesCarsPanel.getInstance();
+        AvailablesCarsPanel p1 = AvailablesCarsPanel.getInstance();
+        ModifyResPanel p2 = ModifyResPanel.getInstance();
+        CalculateCostPanel p3 = CalculateCostPanel.getInstance();
+        CategAgencesPanel p4 = CategAgencesPanel.getInstance();
+        ClientsResPanel p5 = ClientsResPanel.getInstance();
+        DisplayResPanel p6 = DisplayResPanel.getInstance();
 
         //Listeners
         button1.addActionListener(e -> changer(panel2, p1));
-        //button2.addActionListener(e -> changer(panel2, p2));
-        //button3.addActionListener(e -> changer(panel2, p3));
-        //button4.addActionListener(e -> changer(panel2, p4));
-        //button5.addActionListener(e -> changer(panel2, p5));
-        //button6.addActionListener(e -> changer(panel2, p6));
-        //button7.addActionListener(e -> changer(panel2, p7));
+        button2.addActionListener(e -> changer(panel2, p2));
+        button3.addActionListener(e -> changer(panel2, p3));
+        button4.addActionListener(e -> {
+            p4.actualise();
+            changer(panel2, p4);
+        });
+        button5.addActionListener(e -> changer(panel2, p5));
+        button6.addActionListener(e -> {
+            p6.actualise();
+            changer(panel2, p6);
+        });
 
         //Frame
         panel3.add(label1, BorderLayout.NORTH);
-        panel4.add(label2, createConstraint(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, 5, 5, 27, 5, 0, 0));
-        panel4.add(button1, createConstraint(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 0, 0, 22, 0, 0, 0));
-        panel4.add(label4, createConstraint(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, 5, 5, 27, 5, 0, 0));
-        panel4.add(button2, createConstraint(1, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 0, 0, 22, 0, 0, 0));
-        panel4.add(label3, createConstraint(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, 5, 5, 27, 5, 0, 0));
-        panel4.add(button3, createConstraint(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 0, 0, 22, 0, 0, 0));
-        panel4.add(label6, createConstraint(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, 5, 5, 27, 5, 0, 0));
-        panel4.add(button4, createConstraint(1, 3, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 0, 0, 22, 0, 0, 0));
-        panel4.add(label5, createConstraint(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, 5, 5, 27, 5, 0, 0));
-        panel4.add(button5, createConstraint(1, 4, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 0, 0, 22, 0, 0, 0));
-        panel4.add(label7, createConstraint(0, 5, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, 5, 5, 27, 5, 0, 8));
-        panel4.add(button6, createConstraint(1, 5, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 0, 0, 22, 0, 0, 0));
-        panel4.add(label8, createConstraint(0, 6, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, 5, 5, 27, 5, 0, 0));
-        panel4.add(button7, createConstraint(1, 6, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 0, 0, 22, 0, 0, 0));
+        panel4.add(label2,
+
+                createConstraint(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, 5, 5, 27, 5, 0, 0));
+        panel4.add(button1,
+
+                createConstraint(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 0, 0, 22, 0, 0, 0));
+        panel4.add(label4,
+
+                createConstraint(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, 5, 5, 27, 5, 0, 0));
+        panel4.add(button2,
+
+                createConstraint(1, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 0, 0, 22, 0, 0, 0));
+        panel4.add(label3,
+
+                createConstraint(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, 5, 5, 27, 5, 0, 0));
+        panel4.add(button3,
+
+                createConstraint(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 0, 0, 22, 0, 0, 0));
+        panel4.add(label6,
+
+                createConstraint(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, 5, 5, 27, 5, 0, 0));
+        panel4.add(button4,
+
+                createConstraint(1, 3, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 0, 0, 22, 0, 0, 0));
+        panel4.add(label5,
+
+                createConstraint(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, 5, 5, 27, 5, 0, 0));
+        panel4.add(button5,
+
+                createConstraint(1, 4, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 0, 0, 22, 0, 0, 0));
+        panel4.add(label7,
+
+                createConstraint(0, 5, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, 5, 5, 27, 5, 0, 8));
+        panel4.add(button6,
+
+                createConstraint(1, 5, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 0, 0, 22, 0, 0, 0));
         panel3.add(panel4, BorderLayout.CENTER);
         panel1.add(panel3, BorderLayout.WEST);
         panel2.add(panel1, BorderLayout.WEST);
+        panel2.add(oldPane, BorderLayout.CENTER);
+
         add(panel2, BorderLayout.CENTER);
+
     }
 
     /**
@@ -146,9 +187,7 @@ public class MenuGUI extends JPanel {
      * @param p panel enfant
      */
     public void changer(JPanel k, JPanel p) {
-        if (oldPane != null) {
-            k.remove(oldPane);
-        }
+        k.remove(oldPane);
         oldPane = p;
         k.add(p, BorderLayout.CENTER);
         k.repaint();

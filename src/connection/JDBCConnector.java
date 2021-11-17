@@ -46,7 +46,7 @@ public class JDBCConnector {
         JDBCConnector.password = String.valueOf(password);
     }
 
-    private static void reset(){
+    private static void reset() {
         instance = null;
         connection = null;
     }

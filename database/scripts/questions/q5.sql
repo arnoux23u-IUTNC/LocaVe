@@ -1,9 +1,8 @@
-select c.CODE_CLI, count( distinct v.MODELE) from CLIENT C
-inner join DOSSIER D on C.CODE_CLI = D.CODE_CLI
-inner join VEHICULE v on v.NO_IMM = d.NO_IMM
-having count(distinct v.MODELE) = 2
-group by c.CODE_CLI
-order by c.CODE_CLI;
-
-
+SELECT C.*
+FROM CLIENT C
+         INNER JOIN DOSSIER D ON C.CODE_CLI = D.CODE_CLI
+         INNER JOIN VEHICULE v ON v.NO_IMM = d.NO_IMM
+HAVING COUNT(DISTINCT V.MODELE) = 2
+GROUP BY C.CODE_CLI, NOM, RUE, VILLE, CODPOSTAL
+ORDER BY c.CODE_CLI
 
