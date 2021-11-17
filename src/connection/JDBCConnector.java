@@ -25,17 +25,21 @@ public class JDBCConnector {
             return connection;
         try {
             instance = JDBCConnector.class;
+            DriverManager.setLoginTimeout(4);
             connection = DriverManager.getConnection(url, user, password);
             return connection;
         } catch (SQLException exception) {
             reset();
-            String msg = exception.getMessage();
+            String msg = exception.getMessage().toLowerCase();
             if (msg.contains("denied"))
                 throw new JDBCException("Identifiants incorrects");
             if (msg.contains("suitable"))
                 throw new JDBCException("Driver introuvable");
+            if (msg.contains("adapter"))
+                throw new JDBCException("Aucun VPN detecté");
+            else
+                throw new JDBCException("Erreur de connexion");
         }
-        return null;
     }
 
     public static void setUser(String user) {
