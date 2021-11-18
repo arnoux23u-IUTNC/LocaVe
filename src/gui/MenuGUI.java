@@ -18,15 +18,19 @@ public class MenuGUI extends JPanel {
      * Objet representant l'ancien JPanel affiche
      */
     private JPanel oldPane = new JPanel() {{
-        setLayout(new BorderLayout());
+        setLayout(new GridLayout(3,1));
         add(new JLabel("Bienvenue sur Locave") {{
             setHorizontalAlignment(CENTER);
             setFont(new Font("Arial", Font.BOLD, 40));
-        }}, BorderLayout.CENTER);
-        add(new JLabel("<html>ARNOUX Guillaume - STEINER Noe<br/><br/></html>") {{
+        }});
+        add(new JLabel("<html><div style='text-align:center;'>Pour garantir une utilisation correcte de cette<br/>application, assure vous d'avoir lancé le script<br/><strong>init.sql</strong> disponible sur GitHub.</div></html>") {{
+            setHorizontalAlignment(CENTER);
+            setFont(new Font("Arial", Font.PLAIN, 20));
+        }});
+        add(new JLabel("ARNOUX Guillaume - STEINER Noe") {{
             setHorizontalAlignment(CENTER);
             setFont(new Font("Arial", Font.BOLD, 15));
-        }}, BorderLayout.SOUTH);
+        }});
     }};
 
     /**
