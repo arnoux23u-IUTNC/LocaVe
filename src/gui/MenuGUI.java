@@ -113,42 +113,18 @@ public class MenuGUI extends JPanel {
 
         //Frame
         panel3.add(label1, BorderLayout.NORTH);
-        panel4.add(label2,
-
-                createConstraint(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, 5, 5, 27, 5, 0, 0));
-        panel4.add(button1,
-
-                createConstraint(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 0, 0, 22, 0, 0, 0));
-        panel4.add(label4,
-
-                createConstraint(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, 5, 5, 27, 5, 0, 0));
-        panel4.add(button2,
-
-                createConstraint(1, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 0, 0, 22, 0, 0, 0));
-        panel4.add(label3,
-
-                createConstraint(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, 5, 5, 27, 5, 0, 0));
-        panel4.add(button3,
-
-                createConstraint(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 0, 0, 22, 0, 0, 0));
-        panel4.add(label6,
-
-                createConstraint(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, 5, 5, 27, 5, 0, 0));
-        panel4.add(button4,
-
-                createConstraint(1, 3, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 0, 0, 22, 0, 0, 0));
-        panel4.add(label5,
-
-                createConstraint(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, 5, 5, 27, 5, 0, 0));
-        panel4.add(button5,
-
-                createConstraint(1, 4, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 0, 0, 22, 0, 0, 0));
-        panel4.add(label7,
-
-                createConstraint(0, 5, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, 5, 5, 27, 5, 0, 8));
-        panel4.add(button6,
-
-                createConstraint(1, 5, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 0, 0, 22, 0, 0, 0));
+        panel4.add(label2, createConstraint(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, 5, 5, 27, 5, 0, 0));
+        panel4.add(button1, createConstraint(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 0, 0, 22, 0, 0, 0));
+        panel4.add(label4, createConstraint(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, 5, 5, 27, 5, 0, 0));
+        panel4.add(button2, createConstraint(1, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 0, 0, 22, 0, 0, 0));
+        panel4.add(label3, createConstraint(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, 5, 5, 27, 5, 0, 0));
+        panel4.add(button3, createConstraint(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 0, 0, 22, 0, 0, 0));
+        panel4.add(label6, createConstraint(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, 5, 5, 27, 5, 0, 0));
+        panel4.add(button4, createConstraint(1, 3, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 0, 0, 22, 0, 0, 0));
+        panel4.add(label5, createConstraint(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, 5, 5, 27, 5, 0, 0));
+        panel4.add(button5, createConstraint(1, 4, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 0, 0, 22, 0, 0, 0));
+        panel4.add(label7, createConstraint(0, 5, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, 5, 5, 27, 5, 0, 8));
+        panel4.add(button6, createConstraint(1, 5, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 0, 0, 22, 0, 0, 0));
         panel3.add(panel4, BorderLayout.CENTER);
         panel1.add(panel3, BorderLayout.WEST);
         panel2.add(panel1, BorderLayout.WEST);
@@ -160,6 +136,7 @@ public class MenuGUI extends JPanel {
 
     /**
      * Createur de gridbagconstraints
+     * Utile a l'afficheur
      *
      * @param gridx  gridx
      * @param gridy  gridy

@@ -43,7 +43,6 @@ public class CategAgencesPanel extends JPanel {
         JLabel label1 = new JLabel("Agences toutes cat\u00e9gories") {{
             setHorizontalAlignment(SwingConstants.CENTER);
             setFont(getFont().deriveFont(getFont().getStyle() & ~Font.BOLD, getFont().getSize() + 10f));
-
         }};
 
         //Panels
@@ -78,19 +77,22 @@ public class CategAgencesPanel extends JPanel {
 
     /**
      * Methode actualisation resultat
+     * Recharge le panel
      */
     public void actualise() {
         panel1.removeAll();
         ArrayList<ArrayList<String>> data = new ArrayList<>();
         String[] headers = new String[]{"Code Agence", "Adresse"};
         try {
+            //On se connecte a la BDD
             Connection connection = JDBCConnector.connect();
-            String sql = "SELECT A.CODE_AG, A.RUE, A.VILLE, A.CODPOSTAL FROM VEHICULE V INNER JOIN AGENCE A ON V.CODE_AG = A.CODE_AG HAVING COUNT(DISTINCT CODE_CATEG) = (SELECT COUNT(CODE_CATEG) FROM CATEGORIE) GROUP BY A.CODE_AG, A.RUE, A.VILLE, A.CODPOSTAL";
             if (connection != null) {
-                PreparedStatement statement = connection.prepareStatement(sql);
+                //On recupere le code, la rue, la ville et le code postal de chaque agence
+                PreparedStatement statement = connection.prepareStatement("SELECT A.CODE_AG, A.RUE, A.VILLE, A.CODPOSTAL FROM VEHICULE V INNER JOIN AGENCE A ON V.CODE_AG = A.CODE_AG HAVING COUNT(DISTINCT CODE_CATEG) = (SELECT COUNT(CODE_CATEG) FROM CATEGORIE) GROUP BY A.CODE_AG, A.RUE, A.VILLE, A.CODPOSTAL");
                 ResultSet resultSet = statement.executeQuery();
                 while (resultSet.next()) {
-                    data.add(new ArrayList<>() {{
+                    //Pour chaque agence, on l'ajoute a la liste
+                    data.add(new ArrayList<String>() {{
                         add(resultSet.getString("CODE_AG"));
                         add(resultSet.getString("RUE") + " - " + resultSet.getString("CODPOSTAL") + " - " + resultSet.getString("VILLE"));
                     }});
@@ -101,6 +103,7 @@ public class CategAgencesPanel extends JPanel {
                         dataArray[i][j] = data.get(i).get(j);
                     }
                 }
+                //Affichage sous forme de tableau
                 displayed = new JTable(dataArray, headers) {{
                     setPreferredSize(new Dimension(100, 100));
                     setFont(new Font("Tahoma", Font.PLAIN, 20));

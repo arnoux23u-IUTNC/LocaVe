@@ -35,7 +35,6 @@ public class ModifyResPanel extends JPanel {
         JLabel label1 = new JLabel("Modification r\u00e9servations v\u00e9hicule") {{
             setHorizontalAlignment(SwingConstants.CENTER);
             setFont(getFont().deriveFont(getFont().getStyle() & ~Font.BOLD, getFont().getSize() + 10f));
-
         }};
         JLabel label3 = new JLabel("Immatriculation");
         JLabel label4 = new JLabel("Date d\u00e9part");
@@ -77,14 +76,16 @@ public class ModifyResPanel extends JPanel {
         }};
 
         //ComboBoxes
-        JComboBox<String> comboBox1 = new JComboBox<>() {{
+        JComboBox<String> comboBox1 = new JComboBox<String>() {{
             try {
+                //On se connecte a la BDD
                 Connection connection = JDBCConnector.connect();
-                String sql = "SELECT NO_IMM FROM VEHICULE";
                 if (connection != null) {
-                    PreparedStatement statement = connection.prepareStatement(sql);
+                    //On recupere la liste des immatriculations
+                    PreparedStatement statement = connection.prepareStatement("SELECT NO_IMM FROM VEHICULE");
                     ResultSet resultSet = statement.executeQuery();
                     while (resultSet.next()) {
+                        //On ajoute les immatriculations dans la comboBox
                         addItem(resultSet.getString("NO_IMM"));
                     }
                 }
@@ -93,7 +94,10 @@ public class ModifyResPanel extends JPanel {
             }
         }};
 
-        //Radio
+        /*
+        Boutons Radio
+        On peut choisir si on veut rendre le vehicule disponible ou indisponible
+         */
         ButtonGroup group = new ButtonGroup();
         JRadioButton radio1 = new JRadioButton("Reservé") {{
             setSelected(true);
@@ -121,18 +125,22 @@ public class ModifyResPanel extends JPanel {
         //Buttons
         JButton button3 = new StyledButton("Soumettre") {{
             addActionListener(e -> {
+                //On recupere le vehicule choisi
                 String immatriculation = (String) comboBox1.getSelectedItem();
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
                 Date date1 = calendar1.getDate();
                 Date date2 = calendar2.getDate();
                 if (date1.before(date2) || date1.equals(date2)) {
+                    //On recupere le choix concernant la disponibilite du vehicule
                     String dateDebut = format.format(date1);
                     String dateFin = format.format(date2);
                     boolean disponible = !radio1.isSelected();
                     if (immatriculation != null) {
                         try {
+                            //On se connecte a la BDD
                             Connection connection = JDBCConnector.connect();
                             if (connection != null) {
+                                //On mets a jour le calendrier entre les dates selectionnes (incluses)
                                 PreparedStatement statement = connection.prepareStatement("UPDATE CALENDRIER SET PASLIBRE = ? WHERE NO_IMM LIKE ? AND DATEJOUR BETWEEN TO_DATE(?, 'YYYY-MM-DD') AND TO_DATE(?, 'YYYY-MM-DD')");
                                 statement.setString(1, (disponible ? null : "x"));
                                 statement.setString(2, immatriculation);

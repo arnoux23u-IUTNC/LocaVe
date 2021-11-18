@@ -35,7 +35,6 @@ public class CalculateCostPanel extends JPanel {
         JLabel label1 = new JLabel("Calcul co\u00fbt r\u00e9servation") {{
             setHorizontalAlignment(SwingConstants.CENTER);
             setFont(getFont().deriveFont(getFont().getStyle() & ~Font.BOLD, getFont().getSize() + 10f));
-
         }};
         JLabel label3 = new JLabel("Mod\u00e8le");
         JLabel label4 = new JLabel("Date d\u00e9part");
@@ -103,11 +102,13 @@ public class CalculateCostPanel extends JPanel {
         }};
 
         //ComboBoxes
-        JComboBox<String> comboBox1 = new JComboBox<>() {{
+        JComboBox<String> comboBox1 = new JComboBox<String>() {{
             try {
+                //On se connecte a la BDD
                 Connection connection = JDBCConnector.connect();
                 if (connection != null) {
-                    PreparedStatement statement = connection.prepareStatement("SELECT MODELE FROM VEHICULE");
+                    //On recupere les modèles existants et on les ajoute dans la comboBox
+                    PreparedStatement statement = connection.prepareStatement("SELECT DISTINCT MODELE FROM VEHICULE ORDER BY MODELE");
                     ResultSet resultSet = statement.executeQuery();
                     while (resultSet.next())
                         addItem(resultSet.getString("MODELE"));
@@ -139,7 +140,10 @@ public class CalculateCostPanel extends JPanel {
             setLocale(java.util.Locale.FRANCE);
         }};
 
-        //Buttons
+        /*
+        Boutons
+        Les boutons pour les tarifs weekend sont desactivés
+         */
         ButtonGroup weekend = new ButtonGroup();
         JRadioButton radioButton1 = new JRadioButton("Non") {{
             setSelected(true);
@@ -161,13 +165,16 @@ public class CalculateCostPanel extends JPanel {
         JButton button3 = new StyledButton("Calculer") {
             {
                 addActionListener(e -> {
+                    //On recupere le modele, les dates, et le nombre de jours eventuel séléctionnés
                     String modele = (String) comboBox1.getSelectedItem();
                     Date d1 = calendar1.getDate();
                     Date d2 = calendar2.getDate();
                     if (d1.before(d2) || d1.equals(d2)) {
+                        //On divise pour trouver le nombre de semaines et de jours distincts
                         int nbJours = (int) ((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24)) + 1;
                         int nbSemaines = nbJours / 7;
                         int nbJoursRestants = nbJours % 7;
+                        //Recuperation des kilomètres eventuels
                         if (modele != null) {
                             int kms = 0;
                             if (!jTextField.getText().isEmpty() && !jTextField.getText().replaceAll(" ", "").equals("")) {
@@ -178,8 +185,16 @@ public class CalculateCostPanel extends JPanel {
                                 }
                             }
                             try {
+                                //On se connecte a la BDD
                                 Connection connection = JDBCConnector.connect();
                                 if (connection != null) {
+                                    /*
+                                    On recupere les differents tarifs dans differentes colonnes
+                                    1 : Nombre de jours * TARIF_JOUR
+                                    2 : Nombre de semaines * TARIF_SEMAINE
+                                    3 : Nombre de kilometres * TARIF_KILOMETRE
+                                    4 : Nombre de jours totaux * TARIF_ASSURANCE
+                                     */
                                     PreparedStatement statement = connection.prepareStatement("SELECT TARIF_JOUR * ? AS \"JOUR\", TARIF_HEBDO * ? AS \"SEMAINE\", TARIF_KIL * ? AS \"KIL\", TARIF_ASUR * ? AS \"ASSUR\" FROM CATEGORIE C INNER JOIN VEHICULE V ON C.CODE_CATEG = V.CODE_CATEG INNER JOIN TARIF T ON C.CODE_TARIF = T.CODE_TARIF WHERE MODELE LIKE ?");
                                     statement.setInt(1, nbJoursRestants);
                                     statement.setInt(2, nbSemaines);
@@ -188,6 +203,7 @@ public class CalculateCostPanel extends JPanel {
                                     statement.setString(5, modele);
                                     ResultSet resultSet = statement.executeQuery();
                                     resultSet.next();
+                                    //On stocke les valeurs et on les affiche
                                     double tarifUnitaire = resultSet.getDouble("JOUR") + resultSet.getDouble("SEMAINE");
                                     double tarifKil = resultSet.getDouble("KIL");
                                     double tarifAssur = resultSet.getDouble("ASSUR");

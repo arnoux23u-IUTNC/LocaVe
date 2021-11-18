@@ -11,6 +11,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 /**
  * Panel permettant d'afficher toutes les reservations
+ * Ce panel est la a titre INDICATIF, il n'est pas nécessaire pour le programme
  * Utilisation du patron singleton
  *
  * @author arnoux23u
@@ -90,12 +91,15 @@ public class DisplayResPanel extends JPanel {
         ArrayList<ArrayList<String>> data = new ArrayList<>();
         String[] headers = new String[]{"N°", "Date Retrait", "Agence Retrait", "Date Retour", "Agence Retour", "Retour effectif", "Kil Retrait", "Kil Retour", "Tarif", "Assurance", "Jours", "Semaines", "Remise", "Client", "Immat", "Agence"};
         try {
+            //On se connecte a la BDD
             Connection connection = JDBCConnector.connect();
             if (connection != null) {
+                //On recupere toutes les reservations
                 PreparedStatement statement = connection.prepareStatement("SELECT * FROM DOSSIER");
                 ResultSet resultSet = statement.executeQuery();
                 while (resultSet.next()) {
-                    data.add(new ArrayList<>() {{
+                    //Pour chaque reservation, on ajoute les informations utiles a la liste
+                    data.add(new ArrayList<String>() {{
                         add(resultSet.getString("NO_DOSSIER"));
                         add(resultSet.getString("DATE_RETRAIT").substring(0, 10));
                         add(resultSet.getString("AG_RETRAIT"));
@@ -120,6 +124,7 @@ public class DisplayResPanel extends JPanel {
                         dataArray[i][j] = data.get(i).get(j) != null ? data.get(i).get(j) : "";
                     }
                 }
+                //Affichage sous forme de tableau
                 displayed = new JTable(dataArray, headers) {{
                     setPreferredSize(new Dimension(100, 100));
                     setFont(new Font("Tahoma", Font.PLAIN, 14));

@@ -39,7 +39,6 @@ public class ClientsResPanel extends JPanel {
         JLabel label1 = new JLabel("Clients fidèles") {{
             setHorizontalAlignment(SwingConstants.CENTER);
             setFont(getFont().deriveFont(getFont().getStyle() & ~Font.BOLD, getFont().getSize() + 10f));
-
         }};
         JLabel label2 = new JLabel("Nombre de modèles distincts loués");
 
@@ -67,17 +66,20 @@ public class ClientsResPanel extends JPanel {
                 ArrayList<ArrayList<String>> data = new ArrayList<>();
                 String[] headers = new String[]{"Code Client", "Nom", "Adresse"};
                 try {
+                    //On recupere le nombre de modeles voulus (pour ne pas chercher forcement qu'avec 2)
                     int nbModeles = Integer.parseInt(jTextField.getText());
                     if (nbModeles > 0) {
                         try {
+                            //On se connecte a la BDD
                             Connection connection = JDBCConnector.connect();
-                            String sql = "SELECT C.* FROM CLIENT C INNER JOIN DOSSIER D ON C.CODE_CLI = D.CODE_CLI INNER JOIN VEHICULE v ON v.NO_IMM = d.NO_IMM HAVING COUNT(DISTINCT V.MODELE) = ? GROUP BY C.CODE_CLI, NOM, RUE, VILLE, CODPOSTAL ORDER BY c.CODE_CLI";
+                            //On recupere les clients ayant loue le nombre voulu de modeles
                             if (connection != null) {
-                                PreparedStatement statement = connection.prepareStatement(sql);
+                                PreparedStatement statement = connection.prepareStatement("SELECT C.* FROM CLIENT C INNER JOIN DOSSIER D ON C.CODE_CLI = D.CODE_CLI INNER JOIN VEHICULE V ON V.NO_IMM = D.NO_IMM HAVING COUNT(DISTINCT V.MODELE) = ? GROUP BY C.CODE_CLI, NOM, RUE, VILLE, CODPOSTAL ORDER BY C.CODE_CLI");
                                 statement.setInt(1, nbModeles);
                                 ResultSet resultSet = statement.executeQuery();
                                 while (resultSet.next()) {
-                                    data.add(new ArrayList<>() {{
+                                    //Pour chaque client, on recupere toute les informations et on les ajoute a la liste
+                                    data.add(new ArrayList<String>() {{
                                         add(resultSet.getString("CODE_CLI"));
                                         add(resultSet.getString("NOM"));
                                         add(resultSet.getString("RUE") + " - " + resultSet.getString("CODPOSTAL") + " - " + resultSet.getString("VILLE"));
@@ -89,6 +91,7 @@ public class ClientsResPanel extends JPanel {
                                         dataArray[i][j] = data.get(i).get(j);
                                     }
                                 }
+                                //Affichage sous forme de tableau
                                 displayed = new JTable(dataArray, headers) {{
                                     setPreferredSize(new Dimension(100, 100));
                                     setFont(new Font("Tahoma", Font.PLAIN, 20));
