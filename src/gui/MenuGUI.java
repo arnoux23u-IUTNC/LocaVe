@@ -1,8 +1,10 @@
 package gui;
 
+import connection.*;
 import gui.panels.*;
 
 import java.awt.*;
+import java.sql.*;
 import java.util.Objects;
 import javax.swing.*;
 import javax.swing.border.*;
@@ -17,21 +19,44 @@ public class MenuGUI extends JPanel {
     /**
      * Objet representant l'ancien JPanel affiche
      */
-    private JPanel oldPane = new JPanel() {{
-        setLayout(new GridLayout(3,1));
-        add(new JLabel("Bienvenue sur Locave") {{
-            setHorizontalAlignment(CENTER);
-            setFont(new Font("Arial", Font.BOLD, 40));
-        }});
-        add(new JLabel("<html><div style='text-align:center;'>Pour garantir une utilisation correcte de cette<br/>application, assure vous d'avoir lancé le script<br/><strong>init.sql</strong> disponible sur GitHub.</div></html>") {{
-            setHorizontalAlignment(CENTER);
-            setFont(new Font("Arial", Font.PLAIN, 20));
-        }});
-        add(new JLabel("ARNOUX Guillaume - STEINER Noe") {{
-            setHorizontalAlignment(CENTER);
-            setFont(new Font("Arial", Font.BOLD, 15));
-        }});
-    }};
+    private JPanel oldPane = new JPanel() {
+        {
+            setLayout(new GridLayout(3, 1));
+            JLabel label1 = new JLabel("<html><div style='text-align:center;'>Pour garantir une utilisation correcte de cette<br/>application, assure vous d'avoir lancé le script<br/><strong>init.sql</strong> disponible sur GitHub.</div></html>") {{
+                setHorizontalAlignment(CENTER);
+                setFont(new Font("Arial", Font.PLAIN, 20));
+            }};
+            JPanel panel = new JPanel() {{
+                setLayout(new GridBagLayout());
+                add(label1, createConstraint(0, 0, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 0, 0, 0, 0, 0, 0));
+            }};
+            add(new JLabel("Bienvenue sur Locave") {{
+                setHorizontalAlignment(CENTER);
+                setFont(new Font("Arial", Font.BOLD, 40));
+            }});
+            add(panel);
+            add(new JLabel("ARNOUX Guillaume - STEINER Noe") {{
+                setHorizontalAlignment(CENTER);
+                setFont(new Font("Arial", Font.BOLD, 15));
+            }});
+            if (JDBCConnector.created) {
+                label1.setText("<html><div style='text-align:center;'>Votre compte semble être correctement configuré</div></html>");
+            } else {
+                label1.setText("<html><div style='text-align:center;'>Votre compte ne semble pas être correctement configuré</div></html>");
+                panel.add(new StyledButton("Lancer script d'initialisation") {{
+                    addActionListener(e -> {
+                        try {
+                            JDBCInit.init();
+                            JOptionPane.showMessageDialog(null, "Script d'initialisation effectué avec succès, veuillez relancer l'application", "Initialisation", JOptionPane.INFORMATION_MESSAGE);
+                            System.exit(4);
+                        } catch (SQLException | JDBCException ex) {
+                            JOptionPane.showMessageDialog(null, ex.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+                        }
+                    });
+                }}, createConstraint(1, 0, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, 0, 20, 0, 0, 0, 0));
+            }
+        }
+    };
 
     /**
      * Constructeur public par defaut
@@ -133,9 +158,7 @@ public class MenuGUI extends JPanel {
         panel1.add(panel3, BorderLayout.WEST);
         panel2.add(panel1, BorderLayout.WEST);
         panel2.add(oldPane, BorderLayout.CENTER);
-
         add(panel2, BorderLayout.CENTER);
-
     }
 
     /**
@@ -174,6 +197,22 @@ public class MenuGUI extends JPanel {
         k.add(p, BorderLayout.CENTER);
         k.repaint();
         k.revalidate();
+    }
+
+    /**
+     * Methode pour verifier si une table existe
+     *
+     * @param tableName nom de la table
+     * @return true si existe, false sinon
+     */
+    public static boolean tableExists(String tableName) {
+        try {
+            DatabaseMetaData meta = JDBCConnector.connect().getMetaData();
+            return meta.getTables(null, JDBCConnector.getUser().toUpperCase(), tableName.toUpperCase(), new String[]{"TABLE"}).next();
+        } catch (SQLException | JDBCException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 }
