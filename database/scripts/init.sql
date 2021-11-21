@@ -11,7 +11,7 @@ DROP TABLE CATEGORIE;
 DROP TABLE TARIF;
 
 --CREATES
-CREATE TABlE AGENCE
+CREATE TABLE AGENCE
 (
     code_ag   VARCHAR2(10),
     nomresp   VARCHAR2(30) NOT NULL,
@@ -22,14 +22,14 @@ CREATE TABlE AGENCE
     pays      VARCHAR2(20),
     PRIMARY KEY (code_ag)
 );
-CREATE TABlE CALENDRIER
+CREATE TABLE CALENDRIER
 (
     no_imm   VARCHAR2(10),
     datejour DATE,
     paslibre CHAR(1),
     PRIMARY KEY (no_imm, datejour)
 );
-CREATE TABlE CATEGORIE
+CREATE TABLE CATEGORIE
 (
     code_categ  VARCHAR2(3),
     libelle     VARCHAR2(30)                                                                       NOT NULL,
@@ -38,7 +38,7 @@ CREATE TABlE CATEGORIE
     code_tarif  VARCHAR2(3),
     PRIMARY KEY (code_categ)
 );
-CREATE TABlE CLIENT
+CREATE TABLE CLIENT
 (
     code_cli  VARCHAR2(8),
     nom       VARCHAR2(40) NOT NULL,
@@ -47,7 +47,7 @@ CREATE TABlE CLIENT
     codpostal VARCHAR2(5)  NOT NULL,
     PRIMARY KEY (code_cli)
 );
-CREATE TABlE DOSSIER
+CREATE TABLE DOSSIER
 (
     no_dossier   NUMBER(6),
     date_retrait DATE NOT NULL,
@@ -67,7 +67,7 @@ CREATE TABlE DOSSIER
     ag_reserve   VARCHAR2(10),
     PRIMARY KEY (no_dossier)
 );
-CREATE TABlE TARIF
+CREATE TABLE TARIF
 (
     code_tarif  VARCHAR2(3),
     tarif_jour  NUMBER(6, 2) NOT NULL,
@@ -78,7 +78,7 @@ CREATE TABlE TARIF
     tarif_asur  NUMBER(6, 2) NOT NULL,
     PRIMARY KEY (code_tarif)
 );
-CREATE TABlE VEHICULE
+CREATE TABLE VEHICULE
 (
     no_imm     VARCHAR2(10),
     marque     VARCHAR2(20) NOT NULL,
