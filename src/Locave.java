@@ -64,6 +64,7 @@ public class Locave extends JPanel {
 
     /**
      * Methode de lancement
+     *
      * @param args arguments shell
      */
     public static void main(String[] args) {
